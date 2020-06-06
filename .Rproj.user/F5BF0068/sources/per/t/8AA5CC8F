@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1567629917082.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3483087092",
+    "id" : "8AA5CC8F",
+    "lastKnownWriteTime" : 1581873530,
+    "last_content_update" : 1581873530239,
+    "path" : "~/BettingGame/app.R",
+    "project_path" : "app.R",
+    "properties" : {
+        "cursorPosition" : "90,0",
+        "scrollLine" : "75"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
