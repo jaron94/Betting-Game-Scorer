@@ -1,10 +1,13 @@
 library(shiny)
-library(tidyverse)
 library(magrittr)
 library(shinyjs)
 library(kableExtra)
 library(shinyWidgets)
 library(shinythemes)
+library(purrr)
+library(dplyr)
+library(tidyr)
+library(readr)
 
 # Set the Kable options to display missing values as empty strings
 options(knitr.kable.NA = '')

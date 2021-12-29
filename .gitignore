@@ -2,3 +2,9 @@
 rsconnect
 round.csv
 table.csv
+.Rproj.user
+library/
+local/
+lock/
+python/
+staging/
