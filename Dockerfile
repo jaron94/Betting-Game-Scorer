@@ -13,11 +13,3 @@ RUN R -e "install.packages('remotes', repos = c(CRAN = 'https://cloud.r-project.
 RUN R -e "remotes::install_github('rstudio/renv@${RENV_VERSION}')"
 COPY ./renv.lock .
 RUN Rscript -e "renv::restore()"
-RUN addgroup --system app \
-    && adduser --system --ingroup app app
-WORKDIR /home/app
-COPY app .
-RUN chown app:app -R /home/app
-USER app
-EXPOSE 3838
-CMD ["R", "-e", "shiny::runApp('/home/app')"]
