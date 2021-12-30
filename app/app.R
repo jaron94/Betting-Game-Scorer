@@ -176,9 +176,9 @@ server <- function(input, output, session) {
             ) %>%
             as_tibble() %>%
             bind_cols(tibble(Round = -1, Stage = stages)) %>%
-            write_csv("table.csv")
+            write_csv("data/table.csv")
         
-        write_csv(tibble(Round = as.integer(0)), "round.csv")
+        write_csv(tibble(Round = as.integer(0)), "data/round.csv")
         }
     })
     
@@ -190,7 +190,7 @@ server <- function(input, output, session) {
         if(input$reload == 0) {
             input$num_players
         } else {
-            read_csv("table.csv") %>%
+            read_csv("data/table.csv") %>%
                 select(-Round, -Stage) %>%
                 ncol()
         }
@@ -200,7 +200,7 @@ server <- function(input, output, session) {
         if(input$reload == 0) {
             map_chr(1:num_players(), ~input[[paste0("P", .)]])
         } else {
-            tab <- read_csv("table.csv")
+            tab <- read_csv("data/table.csv")
             tab %>% select(-Round, -Stage) %>% colnames() %>%
                 shifter(n = tab$Round %>% tail(1) %>% subtract(1))
                 
@@ -209,13 +209,13 @@ server <- function(input, output, session) {
     })
     
     shifted_order <- eventReactive(values$b, {
-        order() %>% shifter(n = read_csv_q("round.csv")$Round)
+        order() %>% shifter(n = read_csv_q("data/round.csv")$Round)
     })
     
     observeEvent(values$b, {
         
         output$round_info <- renderUI({
-            round <- read_csv_q("round.csv")$Round + 1
+            round <- read_csv_q("data/round.csv")$Round + 1
             trumps <- rep(c("&spades;", "&hearts;", "&diams;", "&clubs;", ""), 3)[round]
             HTML(paste0("Round ", round, ": ", card_seq(round), " cards. ", 
                         if(trumps == "") "No Trumps" else paste("Trumps are", trumps)))
@@ -229,7 +229,7 @@ server <- function(input, output, session) {
                 map(shifted_order(), 
                     ~pickerInput(paste0(., "BR"), 
                                  paste0(., " bids?"),
-                                 choices = c("", 0:card_seq(read_csv_q("round.csv")$Round+1)))),
+                                 choices = c("", 0:card_seq(read_csv_q("data/round.csv")$Round+1)))),
                 actionButton("bet", "Enter Bids")
             )
         })
@@ -246,14 +246,14 @@ server <- function(input, output, session) {
                 map(shifted_order(), 
                     ~pickerInput(paste0(., "PR"), 
                                  paste0(., ": how many tricks?"),
-                                 choices = c("", 0:card_seq(read_csv_q("round.csv")$Round+1)))),
+                                 choices = c("", 0:card_seq(read_csv_q("data/round.csv")$Round+1)))),
                 actionButton("score", "Enter Results")
             )
         })
     })
     
     observeEvent(input$bet, {
-        round <- read_csv_q("round.csv")$Round
+        round <- read_csv_q("data/round.csv")$Round
         bids <- map(order(), ~as.integer(input[[paste0(., "BR")]])) %>%
             set_names(order())
         if(any(is.na(unlist(bids)))) {
@@ -264,11 +264,11 @@ server <- function(input, output, session) {
             sendSweetAlert(session, title = "Error", text = "You are currently exactly bid",
                            type = "error")
         } else {
-            read_csv("table.csv") %>%
+            read_csv("data/table.csv") %>%
                 bind_rows(bids %>%
                               list(Round = round, Stage = stages[1]) %>%
                               flatten()) %>%
-                write_csv("table.csv")
+                write_csv("data/table.csv")
             
             hideElement("betting")
             showElement("playing")
@@ -277,7 +277,7 @@ server <- function(input, output, session) {
     })
     
     observeEvent(input$score, {
-        round <- read_csv_q("round.csv")$Round
+        round <- read_csv_q("data/round.csv")$Round
         tricks <- map(order(), ~as.integer(input[[paste0(., "PR")]])) %>%
             set_names(order())
         if(any(is.na(unlist(tricks)))) {
@@ -286,7 +286,7 @@ server <- function(input, output, session) {
                            type = "error")
         } else if(unlist(tricks) %>% sum(na.rm = T) %>% 
                   equals(card_seq(round+1))) {
-            prev_scores <- read_csv("table.csv") %>%
+            prev_scores <- read_csv("data/table.csv") %>%
                 filter(Stage == stages[3]) %>%
                 tail(1) %>%
                 select(-Round, -Stage)
@@ -295,26 +295,26 @@ server <- function(input, output, session) {
                                  ~calc_points(.x, .y)) %>%
                 set_names(order())
             curr_scores <- (if(nrow(prev_scores) > 0) prev_scores + round_scores else round_scores) %>%
-                list(Round = read_csv_q("round.csv")$Round, 
+                list(Round = read_csv_q("data/round.csv")$Round, 
                      Stage = stages[3]) %>%
                 flatten()
-            read_csv("table.csv") %>%
+            read_csv("data/table.csv") %>%
                 bind_rows(tricks %>% 
-                              list(Round = read_csv_q("round.csv")$Round, 
+                              list(Round = read_csv_q("data/round.csv")$Round, 
                                    Stage = stages[2]) %>%
                               flatten()) %>%
                 bind_rows(curr_scores) %>%
-                write_csv("table.csv")
+                write_csv("data/table.csv")
             
-            if(read_csv_q("round.csv")$Round < 12) {
-                read_csv_q("round.csv") %>%
+            if(read_csv_q("data/round.csv")$Round < 12) {
+                read_csv_q("data/round.csv") %>%
                 mutate(Round = Round + 1) %>%
-                write_csv("round.csv")
+                write_csv("data/round.csv")
                 
                 showElement("betting")
                 hideElement("playing")
                 
-                tracked_losses <- loss_tracker(read_csv("table.csv"))
+                tracked_losses <- loss_tracker(read_csv("data/table.csv"))
                 if(!is.na(tracked_losses)) {
                     sendSweetAlert(session, type = "info", title = "", 
                                    text = tracked_losses)
@@ -322,7 +322,7 @@ server <- function(input, output, session) {
                 
             } else {
                 hideElement("playing")
-                final_scores <- read_csv("table.csv") %>%
+                final_scores <- read_csv("data/table.csv") %>%
                     tail(1) %>% select(-Round, -Stage) %>%
                     t() %>%
                     set_colnames("Final Score") %>%
@@ -355,7 +355,7 @@ server <- function(input, output, session) {
     })
     
     table_import <- eventReactive(values$c, {
-        read_csv("table.csv")
+        read_csv("data/table.csv")
     })
     
     output$play_table <- function() {
