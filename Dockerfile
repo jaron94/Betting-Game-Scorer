@@ -1,4 +1,4 @@
-FROM rocker/r-base:latest
+FROM rocker/shiny-verse:4.1.2
 RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
     libcurl4-gnutls-dev \
@@ -13,7 +13,6 @@ RUN R -e "install.packages('remotes', repos = c(CRAN = 'https://cloud.r-project.
 RUN R -e "remotes::install_github('rstudio/renv@${RENV_VERSION}')"
 COPY ./renv.lock .
 RUN Rscript -e "renv::restore()"
-RUN echo "local(options(shiny.port = 3838, shiny.host = '0.0.0.0'))" > /usr/lib/R/etc/Rprofile.site
 RUN addgroup --system app \
     && adduser --system --ingroup app app
 WORKDIR /home/app
