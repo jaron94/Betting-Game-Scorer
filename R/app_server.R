@@ -15,6 +15,7 @@ app_server <- function(input, output, session) {
   # Create identifiers for the three columns on the scorecard:
   # bidding, tricks and score
   stages <- c("B", "T", "S")
+  trump_opts <- c("&spades;", "&hearts;", "&diams;", "&clubs;", "")
 
   table_path <- system.file("table.csv", package = "bgScorer", mustWork = TRUE)
   round_path <- system.file("round.csv", package = "bgScorer", mustWork = TRUE)
@@ -121,7 +122,7 @@ app_server <- function(input, output, session) {
   observeEvent(values$b, {
     output$round_info <- renderUI({
       round <- read_csv_q(round_path)$Round + 1
-      trumps <- rep(c("&spades;", "&hearts;", "&diams;", "&clubs;", ""), 3)[round]
+      trumps <- rep(trump_opts, 3)[round]
       HTML(paste0(
         "Round ", round, ": ", card_seq(round), " cards. ",
         if (trumps == "") "No Trumps" else paste("Trumps are", trumps)
@@ -168,7 +169,8 @@ app_server <- function(input, output, session) {
         title = "Error", text = "Not all players have bid",
         type = "error"
       )
-    } else if (as.integer(bids) %>% sum(na.rm = T) %>%
+    } else if (as.integer(bids) %>%
+      sum(na.rm = TRUE) %>%
       magrittr::equals(card_seq(round + 1))) {
       shinyWidgets::sendSweetAlert(session,
         title = "Error", text = "You are currently exactly bid",
@@ -196,7 +198,8 @@ app_server <- function(input, output, session) {
         text = "Tricks have not recorded for all players",
         type = "error"
       )
-    } else if (unlist(tricks) %>% sum(na.rm = T) %>%
+    } else if (unlist(tricks) %>%
+      sum(na.rm = TRUE) %>%
       magrittr::equals(card_seq(round + 1))) {
       prev_scores <- readr::read_csv(table_path) %>%
         dplyr::filter(Stage == stages[3]) %>%
@@ -208,7 +211,11 @@ app_server <- function(input, output, session) {
         ~ calc_points(.x, .y)
       ) %>%
         purrr::set_names(order())
-      curr_scores <- (if (nrow(prev_scores) > 0) prev_scores + round_scores else round_scores) %>%
+      curr_scores <- (if (nrow(prev_scores) > 0) {
+        prev_scores + round_scores
+      } else {
+        round_scores
+      }) %>%
         list(
           Round = read_csv_q(round_path)$Round,
           Stage = stages[3]
@@ -250,18 +257,26 @@ app_server <- function(input, output, session) {
           dplyr::arrange(dplyr::desc(`Final Score`)) %>%
           dplyr::mutate(Rank = Rank(`Final Score`))
 
-        output$final_scores <-
-          renderTable(rownames = TRUE, digits = 0, spacing = "l", bordered = TRUE, {
+        output$final_scores <- renderTable(
+          rownames = TRUE,
+          digits = 0,
+          spacing = "l",
+          bordered = TRUE,
+          {
             final_scores %>%
               dplyr::select(Player, Rank, `Final Score`) %>%
               tibble::column_to_rownames("Player")
-          })
+          }
+        )
 
         output$end_message <- renderText({
           paste0(
             "Congratulations ",
-            final_scores %>% dplyr::filter(Rank == 1) %>% dplyr::pull(Player) %>%
-              paste(collapse = " and "), "!"
+            final_scores %>%
+              dplyr::filter(Rank == 1) %>%
+              dplyr::pull(Player) %>%
+              paste(collapse = " and "),
+            "!"
           )
         })
 
@@ -270,7 +285,7 @@ app_server <- function(input, output, session) {
     } else {
       shinyWidgets::sendSweetAlert(session,
         title = "Error",
-        text = "The number of tricks declared doesn't equal the total for this round",
+        text = "# of tricks declared doesn't equal the total for this round",
         type = "error"
       )
     }
@@ -281,7 +296,11 @@ app_server <- function(input, output, session) {
   })
 
   output$play_table <- function() {
-    col_order <- c("Round", purrr::map(order(), ~ get_col_order(., stages)) %>% unlist())
+    col_order <- c(
+      "Round",
+      purrr::map(order(), ~ get_col_order(., stages)) %>%
+        unlist()
+    )
     groups <- c(1, rep(3, num_players()), 1, 1) %>%
       purrr::set_names(c(" ", order(), " ", " "))
     col_names <- c(
@@ -295,21 +314,40 @@ app_server <- function(input, output, session) {
       dplyr::select(dplyr::all_of(col_order)) %>%
       dplyr::mutate(Round = Round + 1) %>%
       dplyr::slice(-1) %>%
-      dplyr::mutate(Cards = card_seq(Round)) %>%
-      dplyr::mutate(Suit = rep(c("&spades;", "&hearts;", "&diams;", "&clubs;", ""), 3)[Round]) %>%
-      kableExtra::kable(format = "html", digits = 0, col.names = col_names, escape = F) %>%
-      kableExtra::kable_styling(bootstrap_options = c("bordered", "striped")) %>%
-      kableExtra::row_spec(0, font_size = if (num_players() > 6) 9.7 else NULL) %>%
-      kableExtra::add_header_above(groups, font_size = if (num_players() > 6) 14 else NULL)
+      dplyr::mutate(
+        Cards = card_seq(Round),
+        Suit = rep(trump_opts, 3)[Round]
+      ) %>%
+      kableExtra::kable(
+        format = "html",
+        digits = 0,
+        col.names = col_names,
+        escape = FALSE
+      ) %>%
+      kableExtra::kable_styling(
+        bootstrap_options = c("bordered", "striped")
+      ) %>%
+      kableExtra::row_spec(
+        0,
+        font_size = if (num_players() > 6) 9.7 else NULL
+      ) %>%
+      kableExtra::add_header_above(
+        groups,
+        font_size = if (num_players() > 6) 14 else NULL
+      )
 
     if (table_import() %>% dplyr::pull(Round) %>% max() == -1) {
       out_tab
     } else {
       out_tab %>%
-        kableExtra::column_spec(c(1, which(col_names == "Cards"), which(col_names == "Suit")),
+        kableExtra::column_spec(
+          c(1, which(col_names == "Cards"), which(col_names == "Suit")),
           width = "2cm"
         ) %>%
-        kableExtra::column_spec(seq(3, as.numeric(num_players()) * 3, 3) + 1, bold = T)
+        kableExtra::column_spec(
+          seq(3, as.numeric(num_players()) * 3, 3) + 1,
+          bold = TRUE
+        )
     }
   }
 }
@@ -341,15 +379,24 @@ loss_tracker <- function(tab) {
     dplyr::summarise_if(is.numeric, ~ .[2] == .[1]) %>%
     dplyr::ungroup() %>%
     dplyr::select(-Round) %>%
-    dplyr::summarise_all(~ list(tibble::tibble(lengths = rle(.)$lengths, values = rle(.)$values))) %>%
+    dplyr::summarise_all(~ list(tibble::tibble(
+      lengths = rle(.)$lengths,
+      values = rle(.)$values
+    ))) %>%
     tidyr::gather(key = "player", value = "rle") %>%
     dplyr::filter(purrr::map_lgl(rle, ~ !utils::tail(.$values, 1))) %>%
     dplyr::filter(purrr::map_lgl(rle, ~ utils::tail(.$lengths, 1) >= 3)) %>%
-    dplyr::mutate(rle = purrr::map(rle, ~ dplyr::filter(., lengths >= 3, !values))) %>%
+    dplyr::mutate(rle = purrr::map(
+      rle,
+      ~ dplyr::filter(., lengths >= 3, !values)
+    )) %>%
     dplyr::group_split(player)
 
   if (length(temp) > 0) {
-    purrr::map_chr(temp, ~ paste(.$player, "has lost", .$rle[[1]]$lengths, "times in a row")) %>%
+    purrr::map_chr(
+      temp,
+      ~ paste(.$player, "has lost", .$rle[[1]]$lengths, "times in a row")
+    ) %>%
       paste(collapse = "\n")
   } else {
     NA_character_
