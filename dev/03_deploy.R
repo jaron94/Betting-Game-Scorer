@@ -16,7 +16,6 @@
 ## Run checks ----
 ## Check the package before sending to prod
 devtools::check()
-rhub::check_for_cran()
 
 # Deploy
 
@@ -27,14 +26,12 @@ devtools::build()
 
 ## RStudio ----
 ## If you want to deploy on RStudio related platforms
-golem::add_rstudioconnect_file()
 golem::add_shinyappsio_file()
-golem::add_shinyserver_file()
 
 ## Docker ----
 ## If you want to deploy via a generic Dockerfile
-golem::add_dockerfile_with_renv()
+# golem::add_dockerfile_with_renv()
 
 ## If you want to deploy to ShinyProxy
-golem::add_dockerfile_with_renv_shinyproxy()
+# golem::add_dockerfile_with_renv_shinyproxy()
 
