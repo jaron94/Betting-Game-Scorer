@@ -39,18 +39,3 @@ attachment::att_amend_desc()
 usethis::use_coverage()
 
 ## CI ----
-## Use this part of the script if you need to set up a CI
-## service for your application
-##
-## (You'll need GitHub there)
-usethis::use_github()
-
-# GitHub Actions
-usethis::use_github_action()
-# Chose one of the three
-# See https://usethis.r-lib.org/reference/use_github_action.html
-usethis::use_github_action_check_release()
-usethis::use_github_action_check_standard()
-usethis::use_github_action_check_full()
-# Add action for PR
-usethis::use_github_action_pr_commands()
