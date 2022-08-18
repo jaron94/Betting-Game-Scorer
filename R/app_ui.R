@@ -70,7 +70,10 @@ startup_modal <- function() {
     column(12, align = "center", h3("Game Set-up")),
     column(12,
       align = "center",
-      shinyWidgets::pickerInput("num_players", "How many players?", choices = 2:7)
+      shinyWidgets::pickerInput("num_players",
+        "How many players?",
+        choices = 2:7
+      )
     ),
     column(6, textInput("P1", "Who deals first?")),
     uiOutput("player_inputs"),
