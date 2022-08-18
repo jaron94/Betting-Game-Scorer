@@ -15,6 +15,7 @@ Imports:
     golem (>= 0.3.3),
     kableExtra,
     magrittr,
+    pkgload,
     purrr,
     readr,
     RSQLite,
