@@ -61,7 +61,9 @@ app_server <- function(input, output, session) {
   output$player_inputs <- renderUI({
     purrr::map(
       2:input$num_players,
-      ~ column(6, textInput(paste0("P", .), "Enter Player Name"))
+      \(x) {
+        column(6, textInput(paste0("P", x), "Enter Player Name"))
+      }
     )
   })
 
@@ -86,6 +88,7 @@ app_server <- function(input, output, session) {
         readr::write_csv(table_path)
 
       readr::write_csv(tibble::tibble(Round = as.integer(0)), round_path)
+      exportTestValues(round = 0)
     }
   })
 
@@ -235,6 +238,8 @@ app_server <- function(input, output, session) {
         read_csv_q(round_path) %>%
           dplyr::mutate(Round = Round + 1) %>%
           readr::write_csv(round_path)
+        
+        exportTestValues(round = read_csv_q(round_path)$Round)
 
         shinyjs::showElement("betting")
         shinyjs::hideElement("playing")

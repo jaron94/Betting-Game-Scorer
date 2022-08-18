@@ -28,6 +28,7 @@ Imports:
     utils
 Suggests: 
     covr,
+    shinytest2,
     spelling,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
