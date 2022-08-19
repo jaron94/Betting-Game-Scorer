@@ -15,7 +15,12 @@
 
 ## Dependencies ----
 ## Amend DESCRIPTION with dependencies read from package code parsing
-attachment::att_amend_desc()
+attachment::att_amend_desc(extra.suggests = c("covr", "pkgload"))
+
+renv::settings$ignored.packages(c("devtools", "covr", "spelling"), persist = TRUE)
+renv::settings$snapshot.type("explicit")
+renv::snapshot()
+
 
 ## Add modules ----
 ## Create a module infrastructure in R/
