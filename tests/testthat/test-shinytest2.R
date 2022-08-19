@@ -64,9 +64,9 @@ test_that("{shinytest2} recording: Betting-Game-Scorer", {
     P3 = "Mum"
   )
   
-  app <- AppDriver$new(
+  app <- shinytest2::AppDriver$new(
     app_dir = usethis::proj_path(),
-    variant = platform_variant(), 
+    variant = shinytest2::platform_variant(), 
     name = "Betting-Game-Scorer", 
     height = 569, width = 979,
     seed = 42
