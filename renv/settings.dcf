@@ -1,6 +1,6 @@
 bioconductor.version:
 external.libraries:
-ignored.packages: devtools, covr, spelling
+ignored.packages: devtools, covr, spelling, testthat, shinytest2, RSQLite, DBI
 package.dependency.fields: Imports, Depends, LinkingTo
 r.version:
 snapshot.type: explicit
