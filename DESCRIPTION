@@ -10,11 +10,13 @@ URL: https://github.com/jaron94/Betting-Game-Scorer
 BugReports: https://github.com/jaron94/Betting-Game-Scorer/issues
 Imports: 
     config (>= 0.3.1),
+    DBI,
     dplyr,
     golem (>= 0.3.3),
     kableExtra,
     purrr,
     readr,
+    RSQLite,
     shiny (>= 1.7.2),
     shinyjs,
     shinythemes,
