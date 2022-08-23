@@ -23,7 +23,6 @@ jobs:
           extra-packages: local::.
           needs: deploy, check
           
-      - name: Check package before deployment
       - uses: r-lib/actions/check-r-package@v2
         with:
           args: 'c("--no-manual", "--as-cran")'
