@@ -18,11 +18,17 @@ jobs:
         with:
           use-public-rspm: true
 
-      - uses: r-lib/actions/setup-renv@v2
-
-      - name: Install rsconnect
-        run: install.packages("rsconnect")
-        shell: Rscript {0}
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: local::.
+          needs: deploy, check
+          
+      - name: Check package before deployment
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          args: 'c("--no-manual", "--as-cran")'
+          error-on: '"error"'
+          check-dir: '"check"'
 
       - name: Authorize and deploy app
         run: |
