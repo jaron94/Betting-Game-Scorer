@@ -17,8 +17,8 @@ app_server <- function(input, output, session) {
   stages <- c("B", "T", "S")
   trump_opts <- c("&spades;", "&hearts;", "&diams;", "&clubs;", "")
 
-  table_path <- system.file("table.csv", package = "bgScorer", mustWork = TRUE)
-  round_path <- system.file("round.csv", package = "bgScorer", mustWork = TRUE)
+  table_path <- get_golem_config("table_path")
+  round_path <- get_golem_config("round_path")
 
   values <- reactiveValues(a = NULL, b = NULL, c = NULL)
 

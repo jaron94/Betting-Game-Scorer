@@ -1,8 +1,0 @@
-tests
-dev
-man
-.lintr
-.Rbuildignore
-.gitattributes
-README.rmd
-README.md
