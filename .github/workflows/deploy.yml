@@ -21,8 +21,6 @@ jobs:
           use-public-rspm: true
 
       - uses: r-lib/actions/setup-renv@v2
-        with:
-          use-public-rspm: true
 
       - name: Install rsconnect
         run: install.packages("rsconnect")
