@@ -1,5 +1,5 @@
 # Optionally use RSPM to use Linux binaries
-if (Sys.getenv("USE_RSPM") == "TRUE") {
+if (Sys.info()["sysname"] == "Linux") {
   options(repos = c(RSPM = "https://packagemanager.rstudio.com/all/latest"))
   options(renv.config.repos.override = getOption("repos"))
 }
