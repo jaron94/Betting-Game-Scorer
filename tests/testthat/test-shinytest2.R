@@ -1,3 +1,5 @@
+library(shinytest2)
+
 setup_game <- function(app, players) {
   app$set_inputs(num_players = length(players))
   app$set_inputs(!!!players, allow_no_input_binding_ = TRUE)
@@ -58,15 +60,17 @@ sim_tricks <- function(app, players, valid = TRUE) {
 
 
 test_that("{shinytest2} recording: Betting-Game-Scorer", {
+  skip_if_not(interactive())
+  
   players <- c(
     P1 = "Jon",
     P2 = "Tash",
     P3 = "Mum"
   )
   
-  app <- shinytest2::AppDriver$new(
-    app_dir = usethis::proj_path(),
-    variant = shinytest2::platform_variant(), 
+  app <- AppDriver$new(
+    app_dir = dirname(system.file(package = "bgScorer")),
+    variant = platform_variant(), 
     name = "Betting-Game-Scorer", 
     height = 569, width = 979,
     seed = 42
