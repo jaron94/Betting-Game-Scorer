@@ -26,11 +26,12 @@ Imports:
     utils
 Suggests: 
     covr,
-    pkgload,
     shinytest2,
     spelling,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Config/Needs/deploy: rsconnect, pkgload
+Config/Needs/check: rcmdcheck, devtools
 Encoding: UTF-8
 Language: en-US
 LazyData: true
