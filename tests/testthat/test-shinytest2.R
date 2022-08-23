@@ -60,7 +60,6 @@ sim_tricks <- function(app, players, valid = TRUE) {
 
 
 test_that("{shinytest2} recording: Betting-Game-Scorer", {
-  skip_if_not(interactive())
   
   players <- c(
     P1 = "Jon",
@@ -69,7 +68,7 @@ test_that("{shinytest2} recording: Betting-Game-Scorer", {
   )
   
   app <- AppDriver$new(
-    app_dir = dirname(system.file(package = "bgScorer")),
+    app_dir = system.file(package = "bgScorer"),
     variant = platform_variant(), 
     name = "Betting-Game-Scorer", 
     height = 569, width = 979,
