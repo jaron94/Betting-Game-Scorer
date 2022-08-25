@@ -2,11 +2,9 @@ default:
   golem_name: bgScorer
   golem_version: 0.0.0.9000
   app_prod: no
-  table_path: "inst/table.csv"
-  round_path: "inst/round.csv"
-production:
-  app_prod: yes
   table_path: "table.csv"
   round_path: "round.csv"
+production:
+  app_prod: yes
 dev:
   golem_wd: !expr here::here()
