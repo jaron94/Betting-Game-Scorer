@@ -61,6 +61,11 @@ sim_tricks <- function(app, players, valid = TRUE) {
 
 test_that("{shinytest2} recording: Betting-Game-Scorer", {
   
+  on.exit({
+    unlink(c(test_path("test_app", "table.csv"),
+             test_path("test_app", "round.csv")))
+  }, add = TRUE, after = FALSE)
+  
   players <- c(
     P1 = "Jon",
     P2 = "Tash",
@@ -68,7 +73,7 @@ test_that("{shinytest2} recording: Betting-Game-Scorer", {
   )
   
   app <- AppDriver$new(
-    app_dir = system.file(package = "bgScorer"),
+    app_dir = test_path("test_app"),
     variant = platform_variant(), 
     name = "Betting-Game-Scorer", 
     height = 569, width = 979,
