@@ -1,3 +1,6 @@
+# Set the Kable options to display missing values as empty strings
+options(knitr.kable.NA = "")
+
 utils::globalVariables(
   c(
     "Round", "Table", "Final Score", "player", "temp", "TEMP", "Stage",
