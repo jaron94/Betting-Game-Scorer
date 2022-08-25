@@ -80,6 +80,8 @@ test_that("{shinytest2} recording: Betting-Game-Scorer", {
     seed = 42
   )
   
+  on.exit(app$stop(), add = TRUE, after = FALSE)
+  
   expect_equal(app$get_value(input = "num_players"), "2")
   
   setup_game(app, players)
