@@ -58,13 +58,17 @@ app_server <- function(input, output, session) {
     values$c <- 4
   })
 
-  output$player_inputs <- renderUI({
-    purrr::map(
-      2:input$num_players,
-      \(x) {
-        column(6, textInput(paste0("P", x), "Enter Player Name"))
-      }
-    )
+  observeEvent(input$num_players, {
+    max_players <- 7
+    
+    n_players <- as.integer(input$num_players)
+    
+    # Always show the first two player name inputs
+    for (player_id in seq(3, max_players)) {
+      print(player_id)
+      shinyjs::toggle(paste0("P", player_id),
+                      condition = player_id <= n_players)
+    }
   })
 
   observeEvent(input$set_up, priority = 1, {
