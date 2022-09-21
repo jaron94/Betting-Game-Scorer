@@ -65,17 +65,20 @@ read_csv_q <- function(file) {
 
 # Function to create the modal dialog on startup to set up the game
 startup_modal <- function() {
+  max_players <- 7
+  
   modalDialog(
     column(12, align = "center", h3("Game Set-up")),
     column(12,
       align = "center",
       shinyWidgets::pickerInput("num_players",
         "How many players?",
-        choices = 2:7
+        choices = seq(2, max_players)
       )
     ),
     column(6, textInput("P1", "Who deals first?")),
-    uiOutput("player_inputs"),
+    purrr::map(seq(2, max_players),
+               \(x) column(6, textInput(paste0("P", x), "Enter Player Name"))),
     footer = tagList(
       actionButton("reload", "Reload Previous Game"),
       actionButton("set_up", "New Game")
