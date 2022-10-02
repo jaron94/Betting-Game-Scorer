@@ -17,7 +17,8 @@ app_ui <- function(request) {
           width = 2,
           h4(uiOutput("round_info")),
           uiOutput("betting"),
-          shinyjs::hidden(uiOutput("playing"))
+          shinyjs::hidden(uiOutput("playing")),
+          actionButton("save_game", "Save game")
         ),
         mainPanel(
           fluidRow(column(10,
@@ -49,7 +50,12 @@ golem_add_external_resources <- function() {
       path = app_sys("app/www"),
       app_title = "bgScorer"
     ),
-    shinyjs::useShinyjs()
+    shinyjs::useShinyjs(),
+    tags$style(HTML("
+      .form-group, {
+           margin-left: 0px;
+           margin-right: 0px
+      }"))
   )
 }
 
@@ -65,24 +71,49 @@ read_csv_q <- function(file) {
 
 # Function to create the modal dialog on startup to set up the game
 startup_modal <- function() {
+  sheets <- bg_sheet_names()
+  saved_games <- sheets |>
+    subset(bg_sheet_names() != get_golem_config("results_sheet"))
+
+  saved_game_dates <- suppressWarnings(as.numeric(saved_games)) |>
+    as.POSIXct(origin = "1970-01-01") |>
+    as.character() |>
+    dplyr::coalesce(saved_games)
+
+  names(saved_games) <- saved_game_dates
+
   max_players <- 7
-  
+
   modalDialog(
-    column(12, align = "center", h3("Game Set-up")),
-    column(12,
-      align = "center",
-      shinyWidgets::pickerInput("num_players",
-        "How many players?",
-        choices = seq(2, max_players)
+    fluidRow(column(12, align = "center", h3("Game Set-up"))),
+    fluidRow(
+      column(12,
+        align = "center",
+        shinyWidgets::pickerInput("num_players",
+          "How many players?",
+          choices = seq(2, max_players)
+        )
       )
     ),
-    column(6, textInput("P1", "Who deals first?")),
-    purrr::map(seq(2, max_players),
-               \(x) column(6, textInput(paste0("P", x), "Enter Player Name"))),
-    footer = tagList(
-      actionButton("reload", "Reload Previous Game"),
-      actionButton("set_up", "New Game")
-    )
+    fluidRow(
+      column(6, textInput("P1", NULL, placeholder = "Who deals first?")),
+      purrr::map(
+        seq(2, max_players),
+        \(x) column(6, textInput(paste0("P", x), NULL))
+      )
+    ),
+    fluidRow(hr()),
+    fluidRow(
+      column(3, actionButton("reload", "Load Game:", width = "100%")),
+      column(3, shinyWidgets::pickerInput(
+        "saved_game_id",
+        NULL,
+        choices = c("Autosave" = "auto", saved_games),
+        width = "100%"
+      )),
+      column(6, actionButton("set_up", "New Game", width = "100%"))
+    ),
+    footer = NULL
   )
 }
 

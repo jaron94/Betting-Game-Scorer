@@ -19,6 +19,9 @@ app_server <- function(input, output, session) {
 
   table_path <- get_golem_config("table_path")
   round_path <- get_golem_config("round_path")
+  game_id_path <- get_golem_config("game_id_path")
+
+  # shinyjs::runjs("$('#game_id').attr('maxlength',15)")
 
   values <- reactiveValues(a = NULL, b = NULL, c = NULL)
 
@@ -60,14 +63,14 @@ app_server <- function(input, output, session) {
 
   observeEvent(input$num_players, {
     max_players <- 7
-    
+
     n_players <- as.integer(input$num_players)
-    
+
     # Always show the first two player name inputs
     for (player_id in seq(3, max_players)) {
-      print(player_id)
       shinyjs::toggle(paste0("P", player_id),
-                      condition = player_id <= n_players)
+        condition = player_id <= n_players
+      )
     }
   })
 
@@ -75,30 +78,56 @@ app_server <- function(input, output, session) {
     if (any(purrr::map_lgl(
       seq_len(input$num_players),
       ~ !isTruthy(input[[paste0("P", .)]])
-      ))) {
+    ))) {
       shinyWidgets::sendSweetAlert(session,
         type = "error",
         text = "Names not recorded for all players"
       )
     } else {
       removeModal()
-      
-      players <- purrr::map_chr(seq_len(input$num_players), 
-                                ~ input[[paste0("P", .)]])
-      
-      matrix(0, ncol = as.integer(input$num_players), nrow = length(stages),
-             dimnames = list(NULL, players)) |>
+
+      players <- purrr::map_chr(
+        seq_len(input$num_players),
+        ~ input[[paste0("P", .)]]
+      )
+
+      matrix(0,
+        ncol = as.integer(input$num_players), nrow = length(stages),
+        dimnames = list(NULL, players)
+      ) |>
         tibble::as_tibble() |>
         tibble::add_column(Round = -1, Stage = stages) |>
         readr::write_csv(table_path)
 
       readr::write_csv(tibble::tibble(Round = as.integer(0)), round_path)
       exportTestValues(round = 0)
+
+      if (!isTruthy(input$game_id)) {
+        game_id <- Sys.time() |>
+          as.numeric() |>
+          as.character()
+      }
+
+      readr::write_csv(tibble::tibble(game_id = game_id), game_id_path)
+      # as.POSIXct(as.numeric(game_id), origin = "1970-01-01")
     }
+  })
+
+  observeEvent(input$save_game, {
+    data <- readr::read_csv(table_path)
+    game_id <- read_game_id(game_id_path)
+
+    save_game(game_id, data, in_progress = TRUE)
   })
 
   observeEvent(input$reload, {
     removeModal()
+
+    game_id <- input$saved_game_id
+
+    if (isTruthy(game_id) && !game_id %in% "auto") {
+      load_game(game_id)
+    }
   })
 
   num_players <- eventReactive(values$a, {
@@ -239,7 +268,7 @@ app_server <- function(input, output, session) {
         read_csv_q(round_path) |>
           dplyr::mutate(Round = Round + 1) |>
           readr::write_csv(round_path)
-        
+
         exportTestValues(round = read_csv_q(round_path)$Round)
 
         shinyjs::showElement("betting")
@@ -254,7 +283,13 @@ app_server <- function(input, output, session) {
         }
       } else {
         shinyjs::hideElement("playing")
-        final_scores <- readr::read_csv(table_path) |>
+
+        result <- readr::read_csv(table_path)
+        game_id <- read_game_id(game_id_path)
+
+        save_game(result, game_id, in_progress = FALSE)
+
+        final_scores <- result |>
           utils::tail(1) |>
           dplyr::select(-Round, -Stage) |>
           tidyr::gather("Player", "Final Score") |>
@@ -329,7 +364,8 @@ app_server <- function(input, output, session) {
       ) |>
       kableExtra::kable_styling(bootstrap_options = c("bordered", "striped")) |>
       kableExtra::row_spec(0,
-                           font_size = if (num_players() > 6) 9.7 else NULL) |>
+        font_size = if (num_players() > 6) 9.7 else NULL
+      ) |>
       kableExtra::add_header_above(
         groups,
         font_size = if (num_players() > 6) 14 else NULL
