@@ -4,6 +4,8 @@ default:
   app_prod: no
   table_path: "table.csv"
   round_path: "round.csv"
+  game_id_path: "game_id.csv"
+  results_sheet: Completed
 production:
   app_prod: yes
 dev:
