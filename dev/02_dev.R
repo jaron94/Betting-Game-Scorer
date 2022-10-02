@@ -17,9 +17,7 @@
 ## Amend DESCRIPTION with dependencies read from package code parsing
 attachment::att_amend_desc(extra.suggests = c("covr", "pkgload"))
 
-renv::settings$snapshot.type("explicit")
-renv::snapshot()
-
+google_auth_config()
 
 ## Add modules ----
 ## Create a module infrastructure in R/
