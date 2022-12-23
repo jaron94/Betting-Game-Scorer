@@ -14,6 +14,7 @@ Imports:
     dplyr,
     golem (>= 0.3.3),
     googlesheets4,
+    jsonlite,
     kableExtra,
     purrr,
     readr,
@@ -36,5 +37,5 @@ Config/Needs/check: rcmdcheck
 Encoding: UTF-8
 Language: en-US
 LazyData: true
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.2
 Roxygen: list(markdown = TRUE)

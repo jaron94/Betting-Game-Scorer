@@ -157,8 +157,9 @@ read_game_id <- function(game_id_path) {
 google_auth_config <- function() {
   google_creds_base <- Sys.getenv("GOOGLE_CREDS_BASE")
   google_creds_complete <- Sys.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-    
-    c(jsonlite::read_json(google_creds_base),
-      private_key = Sys.getenv("GOOGLE_PK")) |>
+
+  c(jsonlite::read_json(google_creds_base),
+    private_key = Sys.getenv("GOOGLE_PK")
+  ) |>
     jsonlite::write_json(google_creds_complete)
 }
