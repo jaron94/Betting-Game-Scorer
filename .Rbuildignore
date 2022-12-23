@@ -12,6 +12,7 @@ $run_dev.*
 ^app\.R$
 ^table\.csv$
 ^round\.csv$
+^game_id\.csv$
 ^rsconnect$
 .lintr
 ^\.github$
