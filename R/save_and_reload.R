@@ -12,7 +12,7 @@
 #'
 #' @usage NULL
 bg_write_sheet <- function(...) {
-  googlesheets4::sheet_write(ss = Sys.getenv("SS_ID"))
+  googlesheets4::sheet_write(..., ss = Sys.getenv("SS_ID"))
 }
 
 #' @rdname googlesheets4_partials
@@ -154,12 +154,17 @@ read_game_id <- function(game_id_path) {
 }
 
 
-google_auth_config <- function() {
-  google_creds_base <- Sys.getenv("GOOGLE_CREDS_BASE")
-  google_creds_complete <- Sys.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-
-  c(jsonlite::read_json(google_creds_base),
-    private_key = Sys.getenv("GOOGLE_PK")
+google_auth_config <- function(
+    base = Sys.getenv("GOOGLE_CREDS_BASE"),
+    complete = Sys.getenv("GOOGLE_APPLICATION_CREDENTIALS"),
+    pk = Sys.getenv("GOOGLE_PK")
+  ) {
+  
+  c(
+    jsonlite::read_json(base), 
+    private_key = jsonlite::fromJSON(shQuote(pk))
   ) |>
-    jsonlite::write_json(google_creds_complete)
+    jsonlite::write_json(complete,
+                         auto_unbox = TRUE, 
+                         pretty = TRUE)
 }

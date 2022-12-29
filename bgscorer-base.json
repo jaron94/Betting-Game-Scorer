@@ -1,7 +1,7 @@
 {
   "type": "service_account",
   "project_id": "bgscorer",
-  "private_key_id": "f3a980df82acf85dae1fb92ba1cbbbbec9f7b299",
+  "private_key_id": "c37b1f8fc373913a27f0f42aba1cecc63f211696",
   "client_email": "shiny-762@bgscorer.iam.gserviceaccount.com",
   "client_id": "118201217202571706975",
   "auth_uri": "https://accounts.google.com/o/oauth2/auth",
