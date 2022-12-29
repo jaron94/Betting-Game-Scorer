@@ -40,6 +40,9 @@ app_ui <- function(request) {
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
 #' @noRd
 golem_add_external_resources <- function() {
+  jscode <- paste0('window.onbeforeunload = function() ', 
+                   '{ return "Please use the button on the webpage"; };')
+  
   add_resource_path(
     "www",
     app_sys("app/www")
@@ -55,7 +58,8 @@ golem_add_external_resources <- function() {
       .form-group, {
            margin-left: 0px;
            margin-right: 0px
-      }"))
+      }")),
+    tags$script(jscode)
   )
 }
 
