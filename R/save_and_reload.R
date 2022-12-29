@@ -154,6 +154,12 @@ read_game_id <- function(game_id_path) {
 }
 
 
+#' Configure Google Authentication using service account
+#'
+#' @param base Path to base for service account token
+#' @param complete Path to completed token
+#' @param pk Private key
+#' @export
 google_auth_config <- function(
     base = Sys.getenv("GOOGLE_CREDS_BASE"),
     complete = Sys.getenv("GOOGLE_APPLICATION_CREDENTIALS"),
