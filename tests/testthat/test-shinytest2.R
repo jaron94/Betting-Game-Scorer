@@ -62,15 +62,17 @@ sim_tricks <- function(app, players, valid = TRUE) {
 test_that("{shinytest2} recording: Betting-Game-Scorer", {
   on.exit(
     {
-      unlink(c(
-        test_path("test_app", "table.csv"),
-        test_path("test_app", "round.csv"),
-        test_path("test_app", "game_id.csv")
-      ))
+      unlink(
+        test_path("test_app", 
+                  c("table.csv", "round.csv", "game_id.csv", "creds.json"))
+      )
     },
     add = TRUE,
     after = FALSE
   )
+  
+  file.copy(rprojroot::find_package_root_file("creds.json"),
+            test_path("test_app"))
 
   players <- c(
     P1 = "Jon",
