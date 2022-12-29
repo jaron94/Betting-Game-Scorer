@@ -49,17 +49,3 @@ test_that(
     )
   }
 )
-
-testServer(app_server, {
-  # Set and test an input
-  session$setInputs(x = 2)
-  expect_equal(input$x, 2)
-})
-
-# Configure this test to fit your need
-test_that(
-  "app launches",
-  {
-    golem::expect_running(sleep = 5)
-  }
-)
