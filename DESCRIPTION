@@ -18,6 +18,7 @@ Imports:
     kableExtra,
     purrr,
     readr,
+    rprojroot,
     RSQLite,
     shiny (>= 1.7.2),
     shinyjs,
