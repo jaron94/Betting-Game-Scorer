@@ -66,13 +66,15 @@ test_that("{shinytest2} recording: Betting-Game-Scorer", {
         test_path("test_app", 
                   c("table.csv", "round.csv", "game_id.csv", "creds.json"))
       )
+      googlesheets4::gs4_deauth()
     },
     add = TRUE,
     after = FALSE
   )
   
-  file.copy(rprojroot::find_package_root_file("creds.json"),
-            test_path("test_app"))
+  googlesheets4::gs4_auth(path = rprojroot::find_package_root_file("creds.json"))
+  
+  expect_s3_class(bg_read_sheet("Completed"), "data.frame")
 
   players <- c(
     P1 = "Jon",
