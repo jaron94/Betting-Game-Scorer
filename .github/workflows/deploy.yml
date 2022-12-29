@@ -10,7 +10,7 @@ jobs:
   shiny-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -30,8 +30,26 @@ jobs:
           check-dir: '"check"'
 
       - name: Authorize and deploy app
+        env:
+          GOOGLE_CREDS_BASE: ${{ secrets.GOOGLE_CREDS_BASE}}
         run: |
-          rsconnect::setAccountInfo("${{ secrets.RSCONNECT_USER }}", "${{ secrets.RSCONNECT_TOKEN }}", "${{ secrets.RSCONNECT_SECRET }}")
-          rsconnect::deployApp(appFiles = c("app.R", "table.csv", "round.csv", "DESCRIPTION", "NAMESPACE", "R", "inst"))
+          renviron <- c(
+            GOOGLE_APPLICATION_CREDENTIALS = "${{ secrets.GAC}}",
+            SS_ID = "${{ secrets.SS_ID}}"
+          )
+          writeLines(paste0(names(renviron), "=", renviron), ".Renviron")
+          bgScorer::google_auth_config(pk = "${{ secrets.GOOGLE_PK }}")
+          rsconnect::setAccountInfo("${{ secrets.RSCONNECT_USER }}",
+                                    "${{ secrets.RSCONNECT_TOKEN }}",
+                                    "${{ secrets.RSCONNECT_SECRET }}")
+          rsconnect::deployApp(appFiles = c("app.R",
+                                            "table.csv",
+                                            "round.csv",
+                                            "DESCRIPTION",
+                                            "NAMESPACE",
+                                            "R",
+                                            "inst",
+                                            ".Renviron",
+                                            "${{ secrets.GOOGLE}}"))
         shell: Rscript {0}
         
