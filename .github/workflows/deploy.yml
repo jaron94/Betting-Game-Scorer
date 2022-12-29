@@ -38,6 +38,8 @@ jobs:
           renviron <- Sys.getenv(env_vars, names = TRUE)
           writeLines(paste0(names(renviron), "=", renviron), ".Renviron")
           bgScorer::google_auth_config()
+          options(gargle_verbosity = "debug")
+          testthat::expect_true(gargle::credentials_app_default()$validate())
         shell: Rscript {0}
           
       - uses: r-lib/actions/check-r-package@v2

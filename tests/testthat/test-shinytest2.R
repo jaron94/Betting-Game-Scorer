@@ -71,7 +71,9 @@ test_that("{shinytest2} recording: Betting-Game-Scorer", {
     after = FALSE
   )
   
-  Sys.setenv(GOOGLE_APPLICATION_CREDENTIALS = test_path("test_app", "creds.json"))
+  withr::local_envvar(
+    GOOGLE_APPLICATION_CREDENTIALS = test_path("test_app", "creds.json")
+  )
 
   google_auth_config(base = test_path("test_app", Sys.getenv("GOOGLE_CREDS_BASE")))
   
