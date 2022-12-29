@@ -31,10 +31,11 @@ jobs:
           
       - name: Configure gs4_auth
         run: |
-          renviron <- Sys.getenv(
+          env_vars <- c(
             "GOOGLE_APPLICATION_CREDENTIALS",
             "SS_ID"
           )
+          renviron <- Sys.getenv(env_vars, names = TRUE)
           writeLines(paste0(names(renviron), "=", renviron), ".Renviron")
           bgScorer::google_auth_config()
         shell: Rscript {0}
