@@ -8,3 +8,5 @@ python/
 staging/
 .Renviron
 bgscorer-f3a980df82ac.json
+creds.json
+.Rprofile
