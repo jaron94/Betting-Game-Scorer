@@ -6,6 +6,11 @@ on:
 
 name: shiny-deploy
 
+env: 
+  GOOGLE_CREDS_BASE: ${{ secrets.GOOGLE_CREDS_BASE }}
+  GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GAC }}
+  SS_ID: ${{ secrets.SS_ID }}
+
 jobs:
   shiny-deploy:
     runs-on: ubuntu-latest
@@ -23,6 +28,15 @@ jobs:
           extra-packages: local::.
           needs: deploy, check
           
+      - name: Configure gs4_auth
+        run: |
+          renviron <- Sys.getenv(
+            GOOGLE_APPLICATION_CREDENTIALS,
+            SS_ID
+          )
+          writeLines(paste0(names(renviron), "=", renviron), ".Renviron")
+          bgScorer::google_auth_config(pk = "${{ secrets.GOOGLE_PK }}")
+          
       - uses: r-lib/actions/check-r-package@v2
         with:
           args: 'c("--no-manual", "--as-cran")'
@@ -30,15 +44,7 @@ jobs:
           check-dir: '"check"'
 
       - name: Authorize and deploy app
-        env:
-          GOOGLE_CREDS_BASE: ${{ secrets.GOOGLE_CREDS_BASE}}
         run: |
-          renviron <- c(
-            GOOGLE_APPLICATION_CREDENTIALS = "${{ secrets.GAC}}",
-            SS_ID = "${{ secrets.SS_ID}}"
-          )
-          writeLines(paste0(names(renviron), "=", renviron), ".Renviron")
-          bgScorer::google_auth_config(pk = "${{ secrets.GOOGLE_PK }}")
           rsconnect::setAccountInfo("${{ secrets.RSCONNECT_USER }}",
                                     "${{ secrets.RSCONNECT_TOKEN }}",
                                     "${{ secrets.RSCONNECT_SECRET }}")
@@ -50,6 +56,6 @@ jobs:
                                             "R",
                                             "inst",
                                             ".Renviron",
-                                            "${{ secrets.GOOGLE}}"))
+                                            "${{ secrets.GAC }}"))
         shell: Rscript {0}
         
