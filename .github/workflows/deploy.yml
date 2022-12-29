@@ -36,6 +36,7 @@ jobs:
           )
           writeLines(paste0(names(renviron), "=", renviron), ".Renviron")
           bgScorer::google_auth_config(pk = "${{ secrets.GOOGLE_PK }}")
+        shell: Rscript {0}
           
       - uses: r-lib/actions/check-r-package@v2
         with:
