@@ -168,7 +168,7 @@ google_auth_config <- function(
   
   c(
     jsonlite::read_json(base), 
-    private_key = jsonlite::fromJSON(dQuote(pk, q = FALSE))
+    private_key = jsonlite::fromJSON(shQuote(pk, type = "cmd"))
   ) |>
     jsonlite::write_json(complete,
                          auto_unbox = TRUE, 
