@@ -17,4 +17,5 @@ $run_dev.*
 .lintr
 ^\.github$
 ^\.rscignore$
-.*\.json$
+^creds\.json$
+^bgscorer-base\.json$

@@ -1,0 +1,11 @@
+{
+  "type": "service_account",
+  "project_id": "bgscorer",
+  "private_key_id": "c37b1f8fc373913a27f0f42aba1cecc63f211696",
+  "client_email": "shiny-762@bgscorer.iam.gserviceaccount.com",
+  "client_id": "118201217202571706975",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/shiny-762%40bgscorer.iam.gserviceaccount.com"
+}
