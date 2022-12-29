@@ -31,8 +31,8 @@ jobs:
       - name: Configure gs4_auth
         run: |
           renviron <- Sys.getenv(
-            GOOGLE_APPLICATION_CREDENTIALS,
-            SS_ID
+            "GOOGLE_APPLICATION_CREDENTIALS",
+            "SS_ID"
           )
           writeLines(paste0(names(renviron), "=", renviron), ".Renviron")
           bgScorer::google_auth_config(pk = "${{ secrets.GOOGLE_PK }}")
