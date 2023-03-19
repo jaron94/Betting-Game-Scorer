@@ -30,7 +30,8 @@ Suggests:
     covr,
     shinytest2,
     spelling,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    withr
 Config/testthat/edition: 3
 Config/Needs/deploy: rsconnect, pkgload
 Config/Needs/check: rcmdcheck
