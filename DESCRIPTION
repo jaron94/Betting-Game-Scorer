@@ -37,5 +37,5 @@ Config/Needs/check: rcmdcheck
 Encoding: UTF-8
 Language: en-US
 LazyData: true
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
