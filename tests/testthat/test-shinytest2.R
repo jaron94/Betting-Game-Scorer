@@ -96,6 +96,8 @@ test_that("{shinytest2} recording: Betting-Game-Scorer", {
   )
 
   on.exit(app$stop(), add = TRUE, after = FALSE)
+  
+  app$wait_for_value(input = "num_players")
 
   expect_equal(app$get_value(input = "num_players"), "2")
 
