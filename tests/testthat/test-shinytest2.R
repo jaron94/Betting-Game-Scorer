@@ -71,13 +71,15 @@ test_that("{shinytest2} recording: Betting-Game-Scorer", {
     after = FALSE
   )
   
-  withr::local_envvar(
-    GOOGLE_APPLICATION_CREDENTIALS = test_path("test_app", "creds.json")
-  )
+  creds_path <- test_path("test_app", "creds.json")
 
-  google_auth_config(base = test_path("test_app", Sys.getenv("GOOGLE_CREDS_BASE")))
+  google_auth_config(base = test_path("test_app", Sys.getenv("GOOGLE_CREDS_BASE")),
+                     complete = creds_path)
   
-  expect_s3_class(bg_read_sheet("Completed"), "data.frame")
+  withr::with_envvar(
+    new = c(GOOGLE_APPLICATION_CREDENTIALS = creds_path),
+    expect_s3_class(bg_read_sheet("Completed"), "data.frame")
+  )
 
   players <- c(
     P1 = "Jon",
