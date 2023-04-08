@@ -17,6 +17,7 @@ Imports:
     jsonlite,
     kableExtra,
     purrr,
+    R6,
     readr,
     RSQLite,
     shiny (>= 1.7.2),
