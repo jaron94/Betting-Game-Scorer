@@ -53,7 +53,6 @@ Player <- R6::R6Class(
     print = function() {
       private$depend()
       cat("Player:", private$id)
-      
     },
     record_bid = function(bid) {
       private$bids <- append(private$bids, bid)
@@ -106,7 +105,7 @@ Game <- R6::R6Class(
         cat("Bids:", purrr::map(private$players, \(x) x$get_bids()) |> unlist() |> toString(), "\n")
       }
       if (private$round >= 1) {
-        cat("Scores:", purrr::map(private$players, \(x) x$get_scores()) |> unlist() |> toString(), "\n") %>% 
+        cat("Scores:", purrr::map(private$players, \(x) x$get_scores()) |> unlist() |> toString(), "\n")
       }
     },
     add_player = function(player) {
@@ -151,7 +150,6 @@ Game <- R6::R6Class(
 )
 
 ui <- fluidPage(
-  
   sidebarLayout(
     sidebarPanel(
       numericInput("num_players", "No. of players", 3, min = 2, max = 10),
@@ -168,7 +166,6 @@ ui <- fluidPage(
       numericInput("score3", "Score 3", 0, min = 0, max = 7),
       actionButton("set_scores", "Set Scores")
     ),
-    
     mainPanel(
       verbatimTextOutput("sitch")
     )
@@ -177,7 +174,7 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   game <- Game$new("new_game")
-  
+
   observeEvent(input$setup, once = TRUE, {
     players <- purrr::map(
       seq_len(input$num_players),
@@ -185,22 +182,20 @@ server <- function(input, output, session) {
     )
     game$add_players(players)
   })
-  
+
   observeEvent(input$set_bids, {
     game$record_bids(input)
     game$advance()
   })
-  
+
   observeEvent(input$set_scores, {
     game$record_scores(input)
     game$advance()
   })
-  
+
   output$sitch <- renderPrint({
     game
   })
-  
 }
 
 shinyApp(ui = ui, server = server)
-
