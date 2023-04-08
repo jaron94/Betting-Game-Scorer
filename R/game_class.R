@@ -1,5 +1,3 @@
-library(shiny)
-
 reactive_trigger <- function() {
   rv <- shiny::reactiveVal(0)
   list(
@@ -148,54 +146,3 @@ Game <- R6::R6Class(
     }
   )
 )
-
-ui <- fluidPage(
-  sidebarLayout(
-    sidebarPanel(
-      numericInput("num_players", "No. of players", 3, min = 2, max = 10),
-      textInput("P1", "Player1"),
-      textInput("P2", "Player2"),
-      textInput("P3", "Player3"),
-      actionButton("setup", "Set up"),
-      numericInput("bid1", "Bid 1", 0, min = 0, max = 7),
-      numericInput("bid2", "Bid 2", 0, min = 0, max = 7),
-      numericInput("bid3", "Bid 3", 0, min = 0, max = 7),
-      actionButton("set_bids", "Set Bids"),
-      numericInput("score1", "Score 1", 0, min = 0, max = 7),
-      numericInput("score2", "Score 2", 0, min = 0, max = 7),
-      numericInput("score3", "Score 3", 0, min = 0, max = 7),
-      actionButton("set_scores", "Set Scores")
-    ),
-    mainPanel(
-      verbatimTextOutput("sitch")
-    )
-  )
-)
-
-server <- function(input, output, session) {
-  game <- Game$new("new_game")
-
-  observeEvent(input$setup, once = TRUE, {
-    players <- purrr::map(
-      seq_len(input$num_players),
-      \(x) Player$new(input[[paste0("P", x)]])
-    )
-    game$add_players(players)
-  })
-
-  observeEvent(input$set_bids, {
-    game$record_bids(input)
-    game$advance()
-  })
-
-  observeEvent(input$set_scores, {
-    game$record_scores(input)
-    game$advance()
-  })
-
-  output$sitch <- renderPrint({
-    game
-  })
-}
-
-shinyApp(ui = ui, server = server)
