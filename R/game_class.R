@@ -1,73 +1,44 @@
-reactive_trigger <- function() {
-  rv <- shiny::reactiveVal(0)
-  list(
-    depend = function() {
-      invisible(rv())
-    },
-    trigger = function() {
-      rv(isolate(rv() + 1))
-    }
-  )
-}
-
-React <- R6::R6Class(
-  "React",
+Base <- R6::R6Class(
+  "Base",
   private = list(
-    id = "",
-    rx_trigger = NULL,
-    depend = function() {
-      if (!is.null(private$rx_trigger)) private$rx_trigger$depend()
-    },
-    trigger = function() {
-      if (!is.null(private$rx_trigger)) private$rx_trigger$trigger()
-    }
+    id = ""
   ),
   public = list(
-    initialize = function(id, reactive = TRUE) {
+    initialize = function(id) {
       private$id <- id
-      if (reactive) {
-        private$rx_trigger <- reactive_trigger()
-      }
+    },
+    get_id = function() {
+      private$id
     },
     change_id = function(new_id) {
       private$id <- new_id
-      private$trigger()
-    },
-    get_id = function() {
-      private$depend()
-      private$id
     }
   )
 )
 
 Player <- R6::R6Class(
   "Player",
-  inherit = React,
+  inherit = Base,
   private = list(
     bids = integer(),
     scores = integer()
   ),
   public = list(
     print = function() {
-      private$depend()
       cat("Player:", private$id)
     },
     record_bid = function(bid) {
       private$bids <- append(private$bids, bid)
-      private$trigger()
       invisible(self)
     },
     record_score = function(score) {
       private$scores <- append(private$scores, score)
-      private$trigger()
       invisible(self)
     },
     get_bids = function() {
-      private$depend()
       private$bids
     },
     get_scores = function() {
-      private$depend()
       private$scores
     }
   )
@@ -75,7 +46,7 @@ Player <- R6::R6Class(
 
 Game <- R6::R6Class(
   "Game",
-  inherit = React,
+  inherit = Base,
   private = list(
     players = list(),
     round = 0,
@@ -83,15 +54,12 @@ Game <- R6::R6Class(
   ),
   public = list(
     get_player_names = function() {
-      private$depend()
       if (!is.null(private$players)) purrr::map_chr(private$players, \(x) x$get_id())
     },
     get_player = function(pos) {
-      private$depend()
       private$players[[pos]]
     },
     print = function() {
-      private$depend()
       cat("Game:", private$id, "\n")
       if (self$num_players() > 0) {
         cat("Players:", toString(self$get_player_names()), "\n")
@@ -110,7 +78,6 @@ Game <- R6::R6Class(
       to_add <- list(player)
       names(to_add) <- player$get_id()
       private$players <- append(private$players, to_add)
-      private$trigger()
       invisible(self)
     },
     add_players = function(players) {
@@ -120,16 +87,13 @@ Game <- R6::R6Class(
       length(private$players)
     },
     get_round = function() {
-      private$depend()
       private$round
     },
     get_bid_stage = function() {
-      private$depend()
       private$bid_stage
     },
     next_round = function() {
       private$round <- private$round + 1
-      private$trigger()
       invisible(self)
     },
     advance = function() {
@@ -137,7 +101,6 @@ Game <- R6::R6Class(
         self$next_round()
       }
       private$bid_stage <- !private$bid_stage
-      private$trigger()
       invisible(self)
     },
     record_bids = function(input) {
@@ -153,7 +116,6 @@ Game <- R6::R6Class(
       invisible(self)
     },
     save = function(...) {
-      private$depend()
       saveRDS(self, file.path(..., paste0(private$id, ".rds")))
     },
     load = function(id, ...) {
@@ -162,7 +124,6 @@ Game <- R6::R6Class(
       self$add_players(purrr::map(seq_len(loaded$num_players()),
                                   \(pos) loaded$get_player(pos)$clone(deep = TRUE)))
       private$bid_stage <- loaded$get_bid_stage()
-      private$trigger()
     }
   )
 )
