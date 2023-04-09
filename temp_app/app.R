@@ -1,4 +1,5 @@
 devtools::load_all()
+saved_game_dir <- "saved_games"
 
 ui <- fluidPage(
   
@@ -9,6 +10,10 @@ ui <- fluidPage(
       textInput("P2", "Player2"),
       textInput("P3", "Player3"),
       actionButton("setup", "Set up"),
+      actionButton("reload", "Reload"),
+      selectInput("saved_game_id", "Select saved game",
+                  choices = tools::file_path_sans_ext(list.files(saved_game_dir))),
+      actionButton("next_round", "Next Round"),
       numericInput("bid1", "Bid 1", 0, min = 0, max = 7),
       numericInput("bid2", "Bid 2", 0, min = 0, max = 7),
       numericInput("bid3", "Bid 3", 0, min = 0, max = 7),
@@ -16,7 +21,8 @@ ui <- fluidPage(
       numericInput("score1", "Score 1", 0, min = 0, max = 7),
       numericInput("score2", "Score 2", 0, min = 0, max = 7),
       numericInput("score3", "Score 3", 0, min = 0, max = 7),
-      actionButton("set_scores", "Set Scores")
+      actionButton("set_scores", "Set Scores"),
+      actionButton("save_game", "Save Game")
     ),
     
     mainPanel(
@@ -26,9 +32,11 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
+  
   game <- Game$new("new_game")
   
   observeEvent(input$setup, {
+    
     player_names <- purrr::map_chr(seq_len(input$num_players),
                                    \(x) input[[paste0("P", x)]])
     
@@ -41,12 +49,15 @@ server <- function(input, output, session) {
     }
     
     game$add_players(players)
+    
+    game$save(saved_game_dir)
   })
   
   observeEvent(input$reload, {
     game_id <- input$saved_game_id
-    if (isTruthy(game_id))
-    game <<- readRDS(game_id)
+    if (isTruthy(game_id)) {
+      game$load(game_id, saved_game_dir)
+    }
   })
   
   observeEvent(input$set_bids, {
@@ -59,8 +70,16 @@ server <- function(input, output, session) {
     game$advance()
   })
   
+  observeEvent(input$next_round, {
+    game$next_round()
+  })
+  
   output$sitch <- renderPrint({
     game
+  })
+  
+  observeEvent(input$save_game, {
+    game$save(saved_game_dir)
   })
   
 }

@@ -119,6 +119,14 @@ Game <- R6::R6Class(
     num_players = function() {
       length(private$players)
     },
+    get_round = function() {
+      private$depend()
+      private$round
+    },
+    get_bid_stage = function() {
+      private$depend()
+      private$bid_stage
+    },
     next_round = function() {
       private$round <- private$round + 1
       private$trigger()
@@ -143,6 +151,18 @@ Game <- R6::R6Class(
         self$get_player(i)$record_score(input[[paste0("score", i)]])
       }
       invisible(self)
+    },
+    save = function(...) {
+      private$depend()
+      saveRDS(self, file.path(..., paste0(private$id, ".rds")))
+    },
+    load = function(id, ...) {
+      loaded <- readRDS(file.path(..., paste0(id, ".rds")))$clone(deep = TRUE)
+      private$round <- loaded$get_round()
+      self$add_players(purrr::map(seq_len(loaded$num_players()),
+                                  \(pos) loaded$get_player(pos)$clone(deep = TRUE)))
+      private$bid_stage <- loaded$get_bid_stage()
+      private$trigger()
     }
   )
 )
