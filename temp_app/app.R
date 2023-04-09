@@ -1,4 +1,6 @@
 devtools::load_all()
+library(gargoyle)
+
 saved_game_dir <- "saved_games"
 
 ui <- fluidPage(
@@ -35,6 +37,8 @@ server <- function(input, output, session) {
   
   game <- Game$new("new_game")
   
+  init("update_game")
+  
   observeEvent(input$setup, {
     
     player_names <- purrr::map_chr(seq_len(input$num_players),
@@ -50,6 +54,8 @@ server <- function(input, output, session) {
     
     game$add_players(players)
     
+    trigger("update_game")
+    
     game$save(saved_game_dir)
   })
   
@@ -58,27 +64,33 @@ server <- function(input, output, session) {
     if (isTruthy(game_id)) {
       game$load(game_id, saved_game_dir)
     }
+    trigger("update_game")
   })
   
   observeEvent(input$set_bids, {
     game$record_bids(input)
     game$advance()
+    trigger("update_game")
   })
   
   observeEvent(input$set_scores, {
     game$record_scores(input)
     game$advance()
+    trigger("update_game")
   })
   
   observeEvent(input$next_round, {
     game$next_round()
+    trigger("update_game")
   })
   
   output$sitch <- renderPrint({
+    watch("update_game")
     game
   })
   
   observeEvent(input$save_game, {
+    watch("update_game")
     game$save(saved_game_dir)
   })
   
