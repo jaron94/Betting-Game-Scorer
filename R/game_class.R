@@ -110,6 +110,9 @@ Game <- R6::R6Class(
       invisible(self)
     },
     record_bids = function(bids) {
+      if (any(is.na(bids))) stop("Not all players have bid")
+      if (sum(bids) == self$num_cards()) stop("You are currently exactly bid")
+      
       purrr::walk2(
         private$players, bids,
         \(player, bid) player$record_bid(bid)
@@ -118,6 +121,14 @@ Game <- R6::R6Class(
       invisible(self)
     },
     record_tricks = function(tricks) {
+      if (any(is.na(tricks))) {
+        stop("Tricks have not been recorded for all players")
+      }
+      
+      if (sum(tricks) != self$num_cards()) {
+        stop("# of tricks declared doesn't equal the total for this round")
+      }
+      
       purrr::walk2(
         private$players, tricks,
         \(player, ntricks) player$record_ntricks(ntricks)

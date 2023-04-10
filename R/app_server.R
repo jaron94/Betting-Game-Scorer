@@ -477,3 +477,12 @@ output_table <- function(game) {
       Suit = rep(trump_opts, 3)[Round]
     )
 }
+
+send_error_alert <- function(text, session = getDefaultReactiveDomain()) {
+  shinyWidgets::sendSweetAlert(
+    session,
+    title = "Error",
+    text = text,
+    type = "error"
+  )
+}
