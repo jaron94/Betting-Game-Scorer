@@ -23,8 +23,7 @@ app_ui <- function(request) {
         mainPanel(
           fluidRow(column(10,
             align = "center",
-            tableOutput("play_table"),
-            verbatimTextOutput("sitch")
+            tableOutput("play_table")
           ))
         )
       )
