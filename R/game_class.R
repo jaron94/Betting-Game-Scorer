@@ -162,6 +162,27 @@ Game <- R6::R6Class(
         purrr::set_names(self$get_player_names()) |>
         purrr::list_rbind(names_to = "player")
     },
+    loss_tracker = function() {
+      tracked_losses <- self$calc_table() |>
+        dplyr::mutate(win = bid == tricks) |>
+        dplyr::nest_by(player) |>
+        dplyr::mutate(rle = list(rle(data$win) |> c() |> purrr::map(\(x) tail(x, 1)))) |>
+        dplyr::select(-data) |>
+        tidyr::unnest_wider(rle) |>
+        dplyr::filter(lengths >= 3, !values)
+      
+      if (nrow(tracked_losses) == 0) {
+        return()
+      }
+      
+      tracked_losses |>
+        dplyr::mutate(
+          msg = paste(player, "has lost", lengths, "times in a row")
+        ) |>
+        dplyr::pull(msg) |>
+        paste(collapse = "\n")
+      
+    },
     save = function(...) {
       saveRDS(self, file.path(..., paste0(private$id, ".rds")))
     },
