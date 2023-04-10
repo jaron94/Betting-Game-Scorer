@@ -156,7 +156,7 @@ Game <- R6::R6Class(
             bid = bids,
             tricks = ntricks
           ) |>
-            dplyr::mutate(score = tricks + (bid == tricks) * 10)
+            dplyr::mutate(score = cumsum(tricks + (bid == tricks) * 10))
         }
       ) |>
         purrr::set_names(self$get_player_names()) |>
