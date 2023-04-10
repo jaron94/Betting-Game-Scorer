@@ -60,9 +60,7 @@ server <- function(input, output, session) {
                                    \(x) input[[paste0("P", x)]])
     
     if (any(player_names == "")) {
-      shinyWidgets::sendSweetAlert(session,
-                                   type = "error", title = "Error",
-                                   text = "Names not recorded for all players")
+      send_error_alert(text = "Names not recorded for all players")
     }
     
     purrr::walk(player_names, req)
@@ -90,30 +88,18 @@ server <- function(input, output, session) {
     removeModal()
   })
   
-  send_error_alert <- function(text, session = getDefaultReactiveDomain()) {
-    shinyWidgets::sendSweetAlert(
-      session,
-      title = "Error",
-      text = text,
-      type = "error"
-    )
-  }
-  
   observeEvent(input$bet, {
     bids <- purrr::map_int(game$get_player_names(),
                            \(name) as.integer(input[[paste0(name, "BR")]]))
     
-    if (any(is.na(bids))) {
-      send_error_alert("Not all players have bid")
-      return()
-    }
+    req(tryCatch(
+      game$record_bids(bids),
+      error = function(e) {
+        send_error_alert(e$message)
+        return(FALSE)
+      }
+    ))
     
-    if (sum(bids) == game$num_cards()) {
-      send_error_alert("You are currently exactly bid")
-      return()
-    }
-    
-    game$record_bids(bids)
     trigger("update_game")
     shinyjs::hideElement("betting")
     shinyjs::showElement("playing")
@@ -123,17 +109,14 @@ server <- function(input, output, session) {
     tricks <- purrr::map_int(game$get_player_names(),
                              \(name) as.integer(input[[paste0(name, "PR")]]))
     
-    if (any(is.na(tricks))) {
-      send_error_alert("Tricks have not been recorded for all players")
-      return()
-    }
+    req(tryCatch(
+      game$record_tricks(tricks),
+      error = function(e) {
+        send_error_alert(e$message)
+        return(FALSE)
+      }
+    ))
     
-    if (sum(tricks) != game$num_cards()) {
-      send_error_alert("# of tricks declared doesn't equal the total for this round")
-      return()
-    }
-    
-    game$record_tricks(tricks)
     trigger("update_game")
     shinyjs::hideElement("playing")
     shinyjs::showElement("betting")
