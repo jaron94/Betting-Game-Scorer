@@ -459,3 +459,21 @@ create_game_inputs <- function(game, bid_stage) {
 get_saved_game_dir <- function() {
   "saved_games"
 }
+
+output_table <- function(game) {
+  stages <- c("B", "T", "S")
+  trump_opts <- c("&spades;", "&hearts;", "&diams;", "&clubs;", "")
+  num_players <- game$num_players()
+  
+  game$calc_table() |>
+    tidyr::pivot_wider(
+      names_from = player,
+      values_from = c(bid, tricks, score),
+      names_glue = "{player}_{.value}",
+      names_vary = "slowest"
+    ) |>
+    dplyr::mutate(
+      Cards = card_seq(Round),
+      Suit = rep(trump_opts, 3)[Round]
+    )
+}
