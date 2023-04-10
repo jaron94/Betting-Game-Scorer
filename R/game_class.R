@@ -86,6 +86,7 @@ Game <- R6::R6Class(
         stop("This game already has players")
       }
       purrr::walk(players, \(x) self$add_player(x))
+      self$next_round()
     },
     num_players = function() {
       length(private$players)
@@ -97,8 +98,8 @@ Game <- R6::R6Class(
       private$bid_stage
     },
     next_round = function() {
+      private$order <- shifter(private$order, private$round)
       private$round <- private$round + 1
-      private$order <- shifter(private$order)
       invisible(self)
     },
     advance = function() {
@@ -113,6 +114,7 @@ Game <- R6::R6Class(
         private$players, bids,
         \(player, bid) player$record_bid(bid)
       )
+      self$advance()
       invisible(self)
     },
     record_tricks = function(tricks) {
@@ -120,6 +122,7 @@ Game <- R6::R6Class(
         private$players, tricks,
         \(player, ntricks) player$record_ntricks(ntricks)
       )
+      self$advance()
       invisible(self)
     },
     get_order = function() {
@@ -127,6 +130,26 @@ Game <- R6::R6Class(
     },
     num_cards = function() {
       card_seq(private$round)
+    },
+    calc_table = function() {
+      purrr::map(
+        private$players,
+        \(x) {
+          bids <- x$get_bids()
+          ntricks <- x$get_ntricks()
+          if (purrr::is_empty(bids)) bids <- NA_integer_
+          if (length(bids) > length(ntricks)) ntricks <- c(ntricks, NA_integer_)
+          
+          data.frame(
+            Round = seq_along(bids),
+            bid = bids,
+            tricks = ntricks
+          ) |>
+            dplyr::mutate(score = tricks + (bid == tricks) * 10)
+        }
+      ) |>
+        purrr::set_names(self$get_player_names()) |>
+        purrr::list_rbind(names_to = "player")
     },
     save = function(...) {
       saveRDS(self, file.path(..., paste0(private$id, ".rds")))

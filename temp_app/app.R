@@ -75,8 +75,6 @@ server <- function(input, output, session) {
       game$change_id(input$game_id)
     }
     
-    game$next_round()
-    
     trigger("update_game")
     
     game$save(saved_game_dir)
@@ -116,7 +114,6 @@ server <- function(input, output, session) {
     }
     
     game$record_bids(bids)
-    game$advance()
     trigger("update_game")
     shinyjs::hideElement("betting")
     shinyjs::showElement("playing")
@@ -137,20 +134,9 @@ server <- function(input, output, session) {
     }
     
     game$record_tricks(tricks)
-    game$advance()
     trigger("update_game")
     shinyjs::hideElement("playing")
     shinyjs::showElement("betting")
-  })
-  
-  observeEvent(input$next_round, {
-    game$next_round()
-    trigger("update_game")
-  })
-  
-  output$sitch <- renderPrint({
-    watch("update_game")
-    game
   })
   
   observeEvent(input$save_game, {
@@ -167,6 +153,49 @@ server <- function(input, output, session) {
     watch("update_game")
     create_game_inputs(game, FALSE)
   })
+  
+  stages <- c("B", "T", "S")
+  trump_opts <- c("&spades;", "&hearts;", "&diams;", "&clubs;", "")
+  
+  output$play_table <- function() {
+    watch("update_game")
+    
+    curr_round <- game$get_round()
+    
+    if (curr_round < 1) {
+      return()
+    }
+    
+    num_players <- game$num_players()
+    
+    groups <- c(1, rep(3, num_players), 1, 1) |>
+      purrr::set_names(c(" ", game$get_player_names(), " ", " "))
+    col_names <- c("Round", rep(stages, num_players), "Cards", "Suit")
+    
+    output_table(game) |>
+      kableExtra::kable(
+        format = "html",
+        digits = 0,
+        col.names = col_names,
+        escape = FALSE
+      ) |>
+      kableExtra::kable_styling(bootstrap_options = c("bordered", "striped")) |>
+      kableExtra::row_spec(0,
+                           font_size = if (num_players > 6) 9.7 else NULL
+      ) |>
+      kableExtra::add_header_above(
+        groups,
+        font_size = if (num_players > 6) 14 else NULL
+      ) |>
+      kableExtra::column_spec(
+        c(1, which(col_names == "Cards"), which(col_names == "Suit")),
+        width = "2cm"
+      ) |>
+      kableExtra::column_spec(
+        seq(3, as.numeric(num_players) * 3, 3) + 1,
+        bold = TRUE
+      )
+  }
   
 }
 
