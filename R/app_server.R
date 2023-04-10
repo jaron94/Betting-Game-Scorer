@@ -440,3 +440,22 @@ loss_tracker <- function(tab) {
     NA_character_
   }
 }
+
+create_game_inputs <- function(game, bid_stage) {
+  tagList(
+    purrr::map(
+      game$get_order(),
+      \(name) shinyWidgets::pickerInput(
+        paste0(name, if (bid_stage) "BR" else "PR"),
+        paste0(name, if (bid_stage) " bids?" else ": how many tricks?"),
+        choices = c("", 0, seq_len(game$num_cards()))
+      )
+    ),
+    actionButton(if (bid_stage) "bet" else "score",
+                 if (bid_stage) "Enter Bids" else "Enter Results")
+  )
+}
+
+get_saved_game_dir <- function() {
+  "saved_games"
+}
