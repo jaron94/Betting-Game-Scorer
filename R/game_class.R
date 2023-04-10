@@ -50,7 +50,8 @@ Game <- R6::R6Class(
   private = list(
     players = list(),
     round = 0,
-    bid_stage = TRUE
+    bid_stage = TRUE,
+    order = character()
   ),
   public = list(
     get_player_names = function() {
@@ -75,12 +76,14 @@ Game <- R6::R6Class(
       }
     },
     add_player = function(player) {
-      to_add <- list(player)
-      names(to_add) <- player$get_id()
-      private$players <- append(private$players, to_add)
+      private$order <- c(private$order, player$get_id())
+      private$players <- append(private$players, player)
       invisible(self)
     },
     add_players = function(players) {
+      if (self$num_players() > 0) {
+        stop("This game already has players")
+      }
       purrr::walk(players, \(x) self$add_player(x))
     },
     num_players = function() {
@@ -94,6 +97,7 @@ Game <- R6::R6Class(
     },
     next_round = function() {
       private$round <- private$round + 1
+      private$order <- shifter(private$order)
       invisible(self)
     },
     advance = function() {
@@ -114,6 +118,12 @@ Game <- R6::R6Class(
         self$get_player(i)$record_score(input[[paste0("score", i)]])
       }
       invisible(self)
+    },
+    get_order = function() {
+      private$order
+    },
+    num_cards = function() {
+      card_seq(private$round)
     },
     save = function(...) {
       saveRDS(self, file.path(..., paste0(private$id, ".rds")))
