@@ -35,7 +35,7 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   
-  game <- Game$new("new_game")
+  game <- Game$new(Sys.time() |> as.numeric() |> as.character())
   
   init("update_game")
   
@@ -55,6 +55,10 @@ server <- function(input, output, session) {
     players <- purrr::map(player_names, \(x) Player$new(x))
     
     game$add_players(players)
+    
+    if (isTruthy(input$game_id)) {
+      game$change_id(input$game_id)
+    }
     
     trigger("update_game")
     
