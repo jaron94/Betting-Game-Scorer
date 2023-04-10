@@ -48,9 +48,11 @@ server <- function(input, output, session) {
       shinyWidgets::sendSweetAlert(session,
                                    type = "error", title = "Error",
                                    text = "Names not recorded for all players")
-    } else {
-      players <- purrr::map(player_names, \(x) Player$new(x))
     }
+    
+    purrr::walk(player_names, req)
+    
+    players <- purrr::map(player_names, \(x) Player$new(x))
     
     game$add_players(players)
     
@@ -61,9 +63,8 @@ server <- function(input, output, session) {
   
   observeEvent(input$reload, {
     game_id <- input$saved_game_id
-    if (isTruthy(game_id)) {
-      game$load(game_id, saved_game_dir)
-    }
+    req(game_id)
+    game$load(game_id, saved_game_dir)
     trigger("update_game")
   })
   
