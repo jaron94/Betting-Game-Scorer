@@ -23,7 +23,8 @@ app_ui <- function(request) {
         mainPanel(
           fluidRow(column(10,
             align = "center",
-            tableOutput("play_table")
+            tableOutput("play_table"),
+            verbatimTextOutput("sitch")
           ))
         )
       )
@@ -75,15 +76,14 @@ read_csv_q <- function(file) {
 
 # Function to create the modal dialog on startup to set up the game
 startup_modal <- function() {
-  sheets <- bg_sheet_names()
-  saved_games <- sheets |>
-    subset(bg_sheet_names() != get_golem_config("results_sheet"))
-
+  saved_games <- list.files(get_saved_game_dir())
+  
   saved_game_dates <- suppressWarnings(as.numeric(saved_games)) |>
+    tools::file_path_sans_ext() |>
     as.POSIXct(origin = "1970-01-01") |>
     as.character() |>
     dplyr::coalesce(saved_games)
-
+   
   names(saved_games) <- saved_game_dates
 
   max_players <- 7
@@ -112,7 +112,7 @@ startup_modal <- function() {
       column(3, shinyWidgets::pickerInput(
         "saved_game_id",
         NULL,
-        choices = c("Autosave" = "auto", saved_games),
+        choices = saved_games,
         width = "100%"
       )),
       column(6, actionButton("set_up", "New Game", width = "100%"))

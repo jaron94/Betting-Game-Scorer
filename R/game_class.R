@@ -21,6 +21,7 @@ Player <- R6::R6Class(
   inherit = Base,
   private = list(
     bids = integer(),
+    ntricks = integer(),
     scores = integer()
   ),
   public = list(
@@ -31,15 +32,15 @@ Player <- R6::R6Class(
       private$bids <- append(private$bids, bid)
       invisible(self)
     },
-    record_score = function(score) {
-      private$scores <- append(private$scores, score)
+    record_ntricks = function(ntricks) {
+      private$ntricks <- append(private$ntricks, ntricks)
       invisible(self)
     },
     get_bids = function() {
       private$bids
     },
-    get_scores = function() {
-      private$scores
+    get_ntricks = function() {
+      private$ntricks
     }
   )
 )
@@ -72,7 +73,7 @@ Game <- R6::R6Class(
         cat("Bids:", purrr::map(private$players, \(x) x$get_bids()) |> unlist() |> toString(), "\n")
       }
       if (private$round >= 1) {
-        cat("Scores:", purrr::map(private$players, \(x) x$get_scores()) |> unlist() |> toString(), "\n")
+        cat("Scores:", purrr::map(private$players, \(x) x$get_ntricks()) |> unlist() |> toString(), "\n")
       }
     },
     add_player = function(player) {
@@ -107,16 +108,18 @@ Game <- R6::R6Class(
       private$bid_stage <- !private$bid_stage
       invisible(self)
     },
-    record_bids = function(input) {
-      for (i in seq_len(self$num_players())) {
-        self$get_player(i)$record_bid(input[[paste0("bid", i)]])
-      }
+    record_bids = function(bids) {
+      purrr::walk2(
+        private$players, bids,
+        \(player, bid) player$record_bid(bid)
+      )
       invisible(self)
     },
-    record_scores = function(input) {
-      for (i in seq_len(self$num_players())) {
-        self$get_player(i)$record_score(input[[paste0("score", i)]])
-      }
+    record_tricks = function(tricks) {
+      purrr::walk2(
+        private$players, tricks,
+        \(player, ntricks) player$record_ntricks(ntricks)
+      )
       invisible(self)
     },
     get_order = function() {
