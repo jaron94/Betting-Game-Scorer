@@ -198,9 +198,10 @@ Game <- R6::R6Class(
     load = function(id, ...) {
       loaded <- readRDS(file.path(..., paste0(id, ".rds")))$clone(deep = TRUE)
       private$round <- loaded$get_round()
-      self$add_players(purrr::map(seq_len(loaded$num_players()),
-                                  \(pos) loaded$get_player(pos)$clone(deep = TRUE)))
+      private$players <- purrr::map(seq_len(loaded$num_players()),
+                                    \(pos) loaded$get_player(pos)$clone(deep = TRUE))
       private$bid_stage <- loaded$get_bid_stage()
+      private$order <- loaded$get_order()
     }
   )
 )
