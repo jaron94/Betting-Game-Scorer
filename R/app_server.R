@@ -156,6 +156,13 @@ app_server <- function(input, output, session) {
   observeEvent(input$save_game, {
     watch("update_game")
     game$save(saved_game_dir)
+    shinyWidgets::sendSweetAlert(
+      session,
+      title = "Game Saved",
+      text = paste("Game has been successfully saved as",
+                   format_game_id(game$get_id())),
+      type = "success"
+    )
   })
   
   gargoyle::on("update_game", {
@@ -323,4 +330,10 @@ send_error_alert <- function(text, session = getDefaultReactiveDomain()) {
     text = text,
     type = "error"
   )
+}
+
+format_game_id <- function(id) {
+  suppressWarnings(as.numeric(id)) |>
+    as.POSIXct(origin = "1970-01-01") |>
+    as.character()
 }

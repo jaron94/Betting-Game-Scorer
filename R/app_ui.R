@@ -75,12 +75,15 @@ read_csv_q <- function(file) {
 
 # Function to create the modal dialog on startup to set up the game
 startup_modal <- function() {
-  saved_games <- list.files(get_saved_game_dir())
+  saved_game_files <- list.files(get_saved_game_dir(), full.names = TRUE)
   
-  saved_game_dates <- suppressWarnings(as.numeric(saved_games)) |>
-    tools::file_path_sans_ext() |>
-    as.POSIXct(origin = "1970-01-01") |>
-    as.character() |>
+  saved_games <- file.info(saved_game_files) |>
+    dplyr::arrange(desc(mtime)) |>
+    rownames() |>
+    basename() |>
+    tools::file_path_sans_ext()
+  
+  saved_game_dates <- format_game_id(saved_games) |>
     dplyr::coalesce(saved_games)
    
   names(saved_games) <- saved_game_dates
