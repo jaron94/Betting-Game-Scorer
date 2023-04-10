@@ -92,8 +92,6 @@ app_server <- function(input, output, session) {
     exportTestValues(round = game$get_round())
     
     trigger("update_game")
-    shinyjs::hideElement("betting")
-    shinyjs::showElement("playing")
   })
   
   observeEvent(input$score, {
@@ -114,6 +112,7 @@ app_server <- function(input, output, session) {
       
       game$save(saved_game_dir)
       
+      shinyjs::hideElement("betting")
       shinyjs::hideElement("playing")
       
       final_scores <- game$calc_final_score()
@@ -142,9 +141,6 @@ app_server <- function(input, output, session) {
       return()
     }
     
-    shinyjs::hideElement("playing")
-    shinyjs::showElement("betting")
-    
     tracked_losses <- game$loss_tracker()
     
     if (!is.null(tracked_losses)) {
@@ -160,6 +156,11 @@ app_server <- function(input, output, session) {
   observeEvent(input$save_game, {
     watch("update_game")
     game$save(saved_game_dir)
+  })
+  
+  gargoyle::on("update_game", {
+    shinyjs::toggle(id = "betting", condition = game$get_bid_stage())
+    shinyjs::toggle(id = "playing", condition = !game$get_bid_stage())
   })
   
   output$betting <- renderUI({
