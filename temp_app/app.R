@@ -120,6 +120,17 @@ server <- function(input, output, session) {
     trigger("update_game")
     shinyjs::hideElement("playing")
     shinyjs::showElement("betting")
+    
+    tracked_losses <- game$loss_tracker()
+    
+    if (!is.null(tracked_losses)) {
+      shinyWidgets::sendSweetAlert(
+        session,
+        type = "info",
+        title = "",
+        text = tracked_losses
+      )
+    }
   })
   
   observeEvent(input$save_game, {
