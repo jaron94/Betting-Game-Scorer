@@ -9,14 +9,14 @@ setup_game <- function(app, players) {
 sim_bids <- function(app, players, valid = TRUE) {
   round <- app$get_value(export = "round")
 
-  tot_tricks <- 7 - round
+  tot_tricks <- card_seq(round)
 
   n_players <- length(players)
 
   bid_ids <- paste0(players, "BR")
 
   if (valid) {
-    bids <- sample(seq(0, tot_tricks), n_players)
+    bids <- sample(seq(0, tot_tricks), n_players, replace = TRUE)
     if (sum(bids) == tot_tricks) {
       bids[1] <- bids[1] + 1
     }
@@ -35,7 +35,7 @@ sim_bids <- function(app, players, valid = TRUE) {
 sim_tricks <- function(app, players, valid = TRUE) {
   round <- app$get_value(export = "round")
 
-  tot_tricks <- 7 - round
+  tot_tricks <- card_seq(round)
 
   n_players <- length(players)
 
@@ -60,12 +60,17 @@ sim_tricks <- function(app, players, valid = TRUE) {
 
 
 test_that("{shinytest2} recording: Betting-Game-Scorer", {
+  saved_game_dir <- get_saved_game_dir()
+  
+  dir.create(test_path("test_app", saved_game_dir))
+  
   on.exit(
     {
       unlink(
         test_path("test_app", 
                   c("table.csv", "round.csv", "game_id.csv", "creds.json"))
       )
+      unlink(test_path("test_app", saved_game_dir), recursive = TRUE)
     },
     add = TRUE,
     after = FALSE
@@ -148,4 +153,9 @@ test_that("{shinytest2} recording: Betting-Game-Scorer", {
   sim_tricks(app, players, valid = TRUE)
 
   expect_null(app$get_html(sweet_alert_button))
+  
+  for (i in seq(2, 12)) {
+    sim_bids(app, players, valid = TRUE)
+    sim_tricks(app, players, valid = TRUE)
+  }
 })

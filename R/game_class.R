@@ -183,6 +183,15 @@ Game <- R6::R6Class(
         paste(collapse = "\n")
       
     },
+    calc_final_score = function() {
+      self$calc_table() |>
+        dplyr::filter(Round == max(Round)) |>
+        dplyr::select(-Round) |>
+        tibble::column_to_rownames("player") |>
+        dplyr::arrange(dplyr::desc(score)) |>
+        dplyr::mutate(Rank = Rank(score), .before = 1) |>
+        dplyr::rename(`Final Score` = score)
+    },
     save = function(...) {
       saveRDS(self, file.path(..., paste0(private$id, ".rds")))
     },
