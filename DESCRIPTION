@@ -30,6 +30,8 @@ Imports:
     utils
 Suggests: 
     covr,
+    rlang,
+    rvest,
     shinytest2,
     spelling,
     testthat (>= 3.0.0),
