@@ -25,6 +25,10 @@ app_server <- function(input, output, session) {
   
   init("update_game")
   
+  gargoyle::on("update_game", {
+    exportTestValues(game = game, round = game$get_round())
+  })
+  
   showModal(startup_modal())
   
   observeEvent(input$num_players, {
@@ -64,8 +68,6 @@ app_server <- function(input, output, session) {
     game$save(saved_game_dir)
     
     removeModal()
-    
-    exportTestValues(round = game$get_round())
   })
   
   observeEvent(input$reload, {
@@ -74,7 +76,6 @@ app_server <- function(input, output, session) {
     game$load(game_id, saved_game_dir)
     trigger("update_game")
     removeModal()
-    exportTestValues(round = game$get_round())
   })
   
   observeEvent(input$bet, {
@@ -88,8 +89,6 @@ app_server <- function(input, output, session) {
         return(FALSE)
       }
     ))
-    
-    exportTestValues(round = game$get_round())
     
     trigger("update_game")
   })
@@ -301,8 +300,8 @@ create_game_inputs <- function(game, bid_stage) {
   )
 }
 
-get_saved_game_dir <- function() {
-  "saved_games"
+get_saved_game_dir <- function(dir = Sys.getenv("BG_GAMES_DIR", "saved_games")) {
+  dir
 }
 
 output_table <- function(game) {
