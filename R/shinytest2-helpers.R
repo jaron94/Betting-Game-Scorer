@@ -155,7 +155,7 @@ sim_tricks <- function(app, players, valid = TRUE) {
 # }
 
 with_gcs_dir <- function(dir, code) {
-  on.exit(googleCloudStorage::gcs_delete_all(dir))
+  on.exit(googleCloudStorageR::gcs_delete_all(dir))
   force(code)
   invisible(dir)
 }
