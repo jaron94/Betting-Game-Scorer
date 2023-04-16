@@ -6,6 +6,9 @@
 \usage{
 bg_gcs_auth(json_file = Sys.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
 }
+\arguments{
+\item{json_file}{Authentication json file you have downloaded from your Google Project}
+}
 \value{
 Function to be called when starting the app
 }
