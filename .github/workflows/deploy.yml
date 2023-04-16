@@ -3,6 +3,8 @@
 on:
   push:
     branches: [main, master]
+  pull_request:
+    branches: [main, master]
 
 name: shiny-deploy
 
@@ -11,6 +13,8 @@ env:
   GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GAC }}
   SS_ID: ${{ secrets.SS_ID }}
   GOOGLE_PK: ${{ secrets.GOOGLE_PK }}
+  GCS_DEFAULT_BUCKET: ${{ secrets.GCS_DEFAULT_BUCKET }}
+  BG_USE_GCS: TRUE
 
 jobs:
   shiny-deploy:
@@ -33,7 +37,9 @@ jobs:
         run: |
           env_vars <- c(
             "GOOGLE_APPLICATION_CREDENTIALS",
-            "SS_ID"
+            "SS_ID",
+            "GCS_DEFAULT_BUCKET",
+            "BG_USE_GCS"
           )
           renviron <- Sys.getenv(env_vars, names = TRUE)
           writeLines(paste0(names(renviron), "=", renviron), ".Renviron")
@@ -44,19 +50,16 @@ jobs:
           
       - uses: r-lib/actions/check-r-package@v2
         with:
-          args: 'c("--no-manual", "--as-cran")'
-          error-on: '"error"'
+          args: 'c("--no-manual")'
           check-dir: '"check"'
 
       - name: Authorize and deploy app
+        if: github.event_name == 'push'
         run: |
           rsconnect::setAccountInfo("${{ secrets.RSCONNECT_USER }}",
                                     "${{ secrets.RSCONNECT_TOKEN }}",
                                     "${{ secrets.RSCONNECT_SECRET }}")
           rsconnect::deployApp(appFiles = c("app.R",
-                                            "table.csv",
-                                            "round.csv",
-                                            "game_id.csv",
                                             "DESCRIPTION",
                                             "NAMESPACE",
                                             "R",
