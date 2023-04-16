@@ -174,3 +174,17 @@ google_auth_config <- function(
                          auto_unbox = TRUE, 
                          pretty = TRUE)
 }
+
+#' Authenticate bgScorer to GCS 
+#'
+#' @return Function to be called when starting the app
+#' @export
+bg_gcs_auth <- function(
+    json_file = Sys.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+  ) {
+  if (as.logical(Sys.getenv("BG_USE_GCS", FALSE))) {
+    googleCloudStorageR::gcs_auth(json_file)
+    default_bucket <- Sys.getenv("GCS_DEFAULT_BUCKET")
+    googleCloudStorageR::gcs_global_bucket(default_bucket)
+  }
+}
