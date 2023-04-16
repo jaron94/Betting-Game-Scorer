@@ -14,6 +14,7 @@ Imports:
     dplyr,
     gargoyle,
     golem (>= 0.3.3),
+    googleCloudStorageR,
     googlesheets4,
     jsonlite,
     kableExtra,

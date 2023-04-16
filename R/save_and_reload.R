@@ -176,6 +176,8 @@ google_auth_config <- function(
 }
 
 #' Authenticate bgScorer to GCS 
+#' 
+#' @inheritParams googleCloudStorageR::gcs_auth
 #'
 #' @return Function to be called when starting the app
 #' @export
