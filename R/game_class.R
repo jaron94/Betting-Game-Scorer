@@ -192,11 +192,29 @@ Game <- R6::R6Class(
         dplyr::mutate(Rank = Rank(score), .before = 1) |>
         dplyr::rename(`Final Score` = score)
     },
-    save = function(...) {
-      saveRDS(self, file.path(..., paste0(private$id, ".rds")))
+    save = function(..., use_gcs = Sys.getenv("BG_USE_GCS", FALSE)) {
+      file <- file.path(..., paste0(private$id, ".rds"))
+      
+      if (!dir.exists(dirname(file))) {
+        dir.create(dirname(file), recursive = TRUE)
+      }
+      
+      saveRDS(self, file)
+      
+      if (as.logical(use_gcs)) {
+        googleCloudStorageR::gcs_upload(file = file, name = file)
+      }
     },
-    load = function(id, ...) {
-      loaded <- readRDS(file.path(..., paste0(id, ".rds")))$clone(deep = TRUE)
+    load = function(id, ..., use_gcs = Sys.getenv("BG_USE_GCS", FALSE)) {
+      file <- file.path(..., paste0(id, ".rds"))
+      loaded <- if (as.logical(use_gcs)) {
+        temp_file <- tempfile()
+        googleCloudStorageR::gcs_get_object(file, saveToDisk = temp_file)
+        on.exit(unlink(temp_file))
+        readRDS(temp_file)
+      } else {
+        readRDS(file)
+      }
       private$round <- loaded$get_round()
       private$players <- purrr::map(seq_len(loaded$num_players()),
                                     \(pos) loaded$get_player(pos)$clone(deep = TRUE))
