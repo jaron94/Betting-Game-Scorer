@@ -5,7 +5,7 @@
 \title{Run the Shiny Application}
 \usage{
 run_app(
-  onStart = NULL,
+  onStart = bg_gcs_auth,
   options = list(),
   enableBookmarking = NULL,
   uiPattern = "/",
