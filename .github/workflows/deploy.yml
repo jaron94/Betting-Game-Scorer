@@ -54,7 +54,6 @@ jobs:
           check-dir: '"check"'
 
       - name: Authorize and deploy app
-        if: github.event_name == 'push'
         run: |
           rsconnect::setAccountInfo("${{ secrets.RSCONNECT_USER }}",
                                     "${{ secrets.RSCONNECT_TOKEN }}",
