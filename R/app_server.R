@@ -300,7 +300,7 @@ create_game_inputs <- function(game, bid_stage) {
   )
 }
 
-get_saved_game_dir <- function(dir = Sys.getenv("BG_GAMES_DIR", "saved_games")) {
+get_saved_game_dir <- function(dir = get_golem_config("bg_games_dir")) {
   dir
 }
 

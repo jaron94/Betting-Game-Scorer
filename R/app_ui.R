@@ -73,20 +73,41 @@ read_csv_q <- function(file) {
   suppressMessages(readr::read_csv(file))
 }
 
-# Function to create the modal dialog on startup to set up the game
-startup_modal <- function() {
-  saved_game_files <- list.files(get_saved_game_dir(), full.names = TRUE)
+get_saved_games <- function(use_gcs = Sys.getenv("BG_USE_GCS", FALSE)) {
+  saved_games <- if (use_gcs) {
+    gcs_objs <- googleCloudStorageR::gcs_list_objects(prefix = get_saved_game_dir())
   
-  saved_games <- file.info(saved_game_files) |>
-    dplyr::arrange(desc(mtime)) |>
-    rownames() |>
-    basename() |>
-    tools::file_path_sans_ext()
+    if (purrr::is_empty(gcs_objs)) return()
+    
+    gcs_objs |>
+      dplyr::arrange(desc(updated)) |>
+      dplyr::pull(name) |>
+      basename() |>
+      tools::file_path_sans_ext()
+  } else {
+    saved_game_files <- list.files(get_saved_game_dir(), full.names = TRUE)
+    
+    if (purrr::is_empty(saved_game_files)) return()
+    
+    file.info(saved_game_files) |>
+      dplyr::arrange(desc(mtime)) |>
+      rownames() |>
+      basename() |>
+      tools::file_path_sans_ext()
+  }
   
   saved_game_dates <- format_game_id(saved_games) |>
     dplyr::coalesce(saved_games)
-   
+  
   names(saved_games) <- saved_game_dates
+  
+  saved_games
+}
+
+# Function to create the modal dialog on startup to set up the game
+startup_modal <- function() {
+  
+  saved_games <- get_saved_games()
 
   max_players <- 7
 
