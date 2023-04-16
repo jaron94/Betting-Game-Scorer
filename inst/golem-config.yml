@@ -2,11 +2,12 @@ default:
   golem_name: bgScorer
   golem_version: 0.0.0.9000
   app_prod: no
-  table_path: "table.csv"
-  round_path: "round.csv"
-  game_id_path: "game_id.csv"
+  bg_games_dir: interactive_saved_games
   results_sheet: Completed
 production:
   app_prod: yes
+  bg_games_dir: saved_games
 dev:
   golem_wd: !expr here::here()
+test:
+  bg_games_dir: test_saved_games
