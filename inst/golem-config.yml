@@ -4,10 +4,10 @@ default:
   app_prod: no
   bg_games_dir: interactive_saved_games
   results_sheet: Completed
+  use_gcs: !expr getOption("bgScorer.use_gcs", FALSE)
+test:
+  bg_games_dir: test_saved_games
 production:
   app_prod: yes
   bg_games_dir: saved_games
-dev:
-  golem_wd: !expr here::here()
-test:
-  bg_games_dir: test_saved_games
+  use_gcs: TRUE

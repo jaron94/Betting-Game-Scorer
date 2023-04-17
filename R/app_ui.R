@@ -73,7 +73,7 @@ read_csv_q <- function(file) {
   suppressMessages(readr::read_csv(file))
 }
 
-get_saved_games <- function(use_gcs = Sys.getenv("BG_USE_GCS", FALSE)) {
+get_saved_games <- function(use_gcs = get_golem_config("use_gcs")) {
   saved_games <- if (use_gcs) {
     gcs_objs <- googleCloudStorageR::gcs_list_objects(prefix = get_saved_game_dir())
   

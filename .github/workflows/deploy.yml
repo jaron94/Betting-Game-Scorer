@@ -8,21 +8,14 @@ on:
 
 name: shiny-deploy
 
-env: 
-  GOOGLE_CREDS_BASE: ${{ secrets.GOOGLE_CREDS_BASE }}
-  GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GAC }}
-  SS_ID: ${{ secrets.SS_ID }}
-  GOOGLE_PK: ${{ secrets.GOOGLE_PK }}
-  GCS_DEFAULT_BUCKET: ${{ secrets.GCS_DEFAULT_BUCKET }}
-  BG_USE_GCS: TRUE
-
 jobs:
   shiny-deploy:
+    env:
+      GCS_DEFAULT_BUCKET: ${{ secrets.GCS_DEFAULT_BUCKET }}
+      BGSCORER_PASSWORD: ${{ secrets.BGSCORER_PASSWORD }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - uses: r-lib/actions/setup-pandoc@v2
 
       - uses: r-lib/actions/setup-r@v2
         with:
@@ -36,16 +29,11 @@ jobs:
       - name: Configure gs4_auth
         run: |
           env_vars <- c(
-            "GOOGLE_APPLICATION_CREDENTIALS",
-            "SS_ID",
-            "GCS_DEFAULT_BUCKET",
-            "BG_USE_GCS"
+            "BGSCORER_PASSWORD",
+            "GCS_DEFAULT_BUCKET"
           )
           renviron <- Sys.getenv(env_vars, names = TRUE)
           writeLines(paste0(names(renviron), "=", renviron), ".Renviron")
-          bgScorer::google_auth_config()
-          options(gargle_verbosity = "debug")
-          testthat::expect_true(gargle::credentials_app_default()$validate())
         shell: Rscript {0}
           
       - uses: r-lib/actions/check-r-package@v2
@@ -63,7 +51,6 @@ jobs:
                                             "NAMESPACE",
                                             "R",
                                             "inst",
-                                            ".Renviron",
-                                            "${{ secrets.GAC }}"))
+                                            ".Renviron"))
         shell: Rscript {0}
         

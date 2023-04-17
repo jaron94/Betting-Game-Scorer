@@ -175,17 +175,16 @@ google_auth_config <- function(
                          pretty = TRUE)
 }
 
-#' Authenticate bgScorer to GCS 
+#' Authenticate bgScorer to GCS
 #' 
-#' @inheritParams googleCloudStorageR::gcs_auth
+#' @param file_name Name of file containing Service Account key
 #'
 #' @return Function to be called when starting the app
 #' @export
-bg_gcs_auth <- function(
-    json_file = Sys.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-  ) {
-  if (as.logical(Sys.getenv("BG_USE_GCS", FALSE))) {
-    googleCloudStorageR::gcs_auth(json_file)
+bg_gcs_auth <- function(file_name = "bgScorer-testing.json") {
+  if (get_golem_config("use_gcs")) {
+    json <- gargle:::secret_read("bgScorer", file_name)
+    googleCloudStorageR::gcs_auth(rawToChar(json))
     default_bucket <- Sys.getenv("GCS_DEFAULT_BUCKET")
     googleCloudStorageR::gcs_global_bucket(default_bucket)
   }

@@ -3,7 +3,8 @@ withr::local_envvar(GOLEM_CONFIG_ACTIVE="test")
 test_that("{shinytest2} recording: Betting-Game-Scorer", {
   
   sg_dir <- withr::local_tempdir()
-  withr::local_envvar(BG_GAMES_DIR = sg_dir, BG_USE_GCS=FALSE)
+  withr::local_options(bgScorer.use_gcs = FALSE)
+  withr::local_envvar(BG_GAMES_DIR = sg_dir)
   
   players <- c(
     P1 = "Jon",
@@ -66,7 +67,8 @@ test_reload <- function(players) {
 test_that("Reloading game works", {
   
   sg_dir <- withr::local_tempdir()
-  withr::local_envvar(BG_GAMES_DIR = sg_dir, BG_USE_GCS=FALSE)
+  withr::local_options(bgScorer.use_gcs = FALSE)
+  withr::local_envvar(BG_GAMES_DIR = sg_dir)
   
   players <- c(
     P1 = "Jon",
@@ -79,13 +81,8 @@ test_that("Reloading game works", {
 
 test_that("Reloading game works with GCS", {
   
-  base_path <- test_path("test_app", Sys.getenv("GOOGLE_CREDS_BASE"))
-  creds_path <- withr::local_file(
-    test_path("test_app", Sys.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
-  )
-  google_auth_config(base = base_path, complete = creds_path)
-  
-  bg_gcs_auth(creds_path)
+  withr::local_options(bgScorer.use_gcs = TRUE)
+  bg_gcs_auth()
   
   sg_dir_path <- get_golem_config("bg_games_dir")
   sg_dir <- withr::local_file(test_path("test_app", sg_dir_path))
@@ -93,7 +90,7 @@ test_that("Reloading game works with GCS", {
     objs <- googleCloudStorageR::gcs_list_objects(prefix = sg_dir_path)$name
     purrr::walk(objs, googleCloudStorageR::gcs_delete_object)
   })
-  withr::local_envvar(BG_GAMES_DIR = sg_dir_path, BG_USE_GCS = TRUE)
+  withr::local_envvar(BG_GAMES_DIR = sg_dir_path)
   
   players <- c(
     P1 = "Jon",

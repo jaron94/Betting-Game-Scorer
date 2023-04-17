@@ -3,7 +3,7 @@ expect_output_table <- function(game) {
 }
 
 test_that("'Game' class works", {
-  withr::local_envvar(BG_USE_GCS = FALSE)
+  withr::local_options(bgScorer.use_gcs = FALSE)
   
   game <- Game$new("new_game")
   

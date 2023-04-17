@@ -4,10 +4,10 @@
 \alias{bg_gcs_auth}
 \title{Authenticate bgScorer to GCS}
 \usage{
-bg_gcs_auth(json_file = Sys.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+bg_gcs_auth(file_name = "bgScorer-testing.json")
 }
 \arguments{
-\item{json_file}{Authentication json file you have downloaded from your Google Project}
+\item{file_name}{Name of file containing Service Account key}
 }
 \value{
 Function to be called when starting the app

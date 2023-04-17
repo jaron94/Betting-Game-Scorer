@@ -17,7 +17,11 @@
 ## Amend DESCRIPTION with dependencies read from package code parsing
 attachment::att_amend_desc(extra.suggests = c("covr", "pkgload"))
 
-google_auth_config()
+gargle:::secret_write(
+  package = "bgScorer",
+  name = "bgScorer-testing.json",
+  input = "path-to-key.json"
+)
 
 ## Add modules ----
 ## Create a module infrastructure in R/

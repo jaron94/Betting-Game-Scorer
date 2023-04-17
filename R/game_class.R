@@ -192,7 +192,7 @@ Game <- R6::R6Class(
         dplyr::mutate(Rank = Rank(score), .before = 1) |>
         dplyr::rename(`Final Score` = score)
     },
-    save = function(..., use_gcs = Sys.getenv("BG_USE_GCS", FALSE)) {
+    save = function(..., use_gcs = get_golem_config("use_gcs")) {
       file <- file.path(..., paste0(private$id, ".rds"))
       
       if (!dir.exists(dirname(file))) {
@@ -201,13 +201,13 @@ Game <- R6::R6Class(
       
       saveRDS(self, file)
       
-      if (as.logical(use_gcs)) {
+      if (use_gcs) {
         googleCloudStorageR::gcs_upload(file = file, name = file)
       }
     },
-    load = function(id, ..., use_gcs = Sys.getenv("BG_USE_GCS", FALSE)) {
+    load = function(id, ..., use_gcs = get_golem_config("use_gcs")) {
       file <- file.path(..., paste0(id, ".rds"))
-      loaded <- if (as.logical(use_gcs)) {
+      loaded <- if (use_gcs) {
         temp_file <- tempfile()
         googleCloudStorageR::gcs_get_object(file, saveToDisk = temp_file)
         on.exit(unlink(temp_file))
