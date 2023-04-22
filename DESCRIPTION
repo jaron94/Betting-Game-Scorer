@@ -21,12 +21,14 @@ Imports:
     rlang,
     shiny (>= 1.7.2),
     shinyjs,
+    shinyMobile,
     shinythemes,
     shinyWidgets,
     tibble,
     tidyr,
     utils
 Suggests: 
+    charpente (>= 0.5.0),
     covr,
     lintr,
     rvest,
@@ -43,3 +45,5 @@ Language: en-US
 LazyData: true
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
+Remotes:  
+    RinteRface/charpente
