@@ -18,6 +18,7 @@ Imports:
     kableExtra,
     purrr,
     R6,
+    rlang,
     shiny (>= 1.7.2),
     shinyjs,
     shinythemes,
@@ -27,7 +28,6 @@ Imports:
     utils
 Suggests: 
     covr,
-    rlang,
     rvest,
     shinytest2,
     sodium,

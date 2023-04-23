@@ -45,6 +45,7 @@ Player <- R6::R6Class(
   )
 )
 
+
 Game <- R6::R6Class(
   "Game",
   inherit = Base,
@@ -52,7 +53,9 @@ Game <- R6::R6Class(
     players = list(),
     round = 0,
     bid_stage = TRUE,
-    order = character()
+    order = character(),
+    stages = c("B", "T", "S"),
+    trump_order = c("&spades;", "&hearts;", "&diams;", "&clubs;", "")
   ),
   public = list(
     get_player_names = function() {
@@ -112,7 +115,7 @@ Game <- R6::R6Class(
     record_bids = function(bids) {
       if (any(is.na(bids))) stop("Not all players have bid")
       if (sum(bids) == self$num_cards()) stop("You are currently exactly bid")
-      
+
       purrr::walk2(
         private$players, bids,
         \(player, bid) player$record_bid(bid)
@@ -124,11 +127,11 @@ Game <- R6::R6Class(
       if (any(is.na(tricks))) {
         stop("Tricks have not been recorded for all players")
       }
-      
+
       if (sum(tricks) != self$num_cards()) {
         stop("# of tricks declared doesn't equal the total for this round")
       }
-      
+
       purrr::walk2(
         private$players, tricks,
         \(player, ntricks) player$record_ntricks(ntricks)
@@ -142,65 +145,33 @@ Game <- R6::R6Class(
     num_cards = function() {
       card_seq(private$round)
     },
+    trump_suit = function() {
+      shifter(private$trump_order, private$round)
+    },
     calc_table = function() {
-      purrr::map(
-        private$players,
-        \(x) {
-          bids <- x$get_bids()
-          ntricks <- x$get_ntricks()
-          if (purrr::is_empty(bids)) bids <- NA_integer_
-          if (length(bids) > length(ntricks)) ntricks <- c(ntricks, NA_integer_)
-          
-          data.frame(
-            Round = seq_along(bids),
-            bid = bids,
-            tricks = ntricks
-          ) |>
-            dplyr::mutate(score = cumsum(tricks + (bid == tricks) * 10))
-        }
-      ) |>
-        purrr::set_names(self$get_player_names()) |>
-        purrr::list_rbind(names_to = "player")
+      .calc_table(self, private)
+    },
+    output_table = function() {
+      .output_table(self, private)
+    },
+    play_table = function() {
+      .play_table(self, private)
     },
     loss_tracker = function() {
-      tracked_losses <- self$calc_table() |>
-        dplyr::mutate(win = bid == tricks) |>
-        dplyr::nest_by(player) |>
-        dplyr::mutate(rle = list(rle(data$win) |> c() |> purrr::map(\(x) tail(x, 1)))) |>
-        dplyr::select(-data) |>
-        tidyr::unnest_wider(rle) |>
-        dplyr::filter(lengths >= 3, !values)
-      
-      if (nrow(tracked_losses) == 0) {
-        return()
-      }
-      
-      tracked_losses |>
-        dplyr::mutate(
-          msg = paste(player, "has lost", lengths, "times in a row")
-        ) |>
-        dplyr::pull(msg) |>
-        paste(collapse = "\n")
-      
+      .loss_tracker(self, private)
     },
     calc_final_score = function() {
-      self$calc_table() |>
-        dplyr::filter(Round == max(Round)) |>
-        dplyr::select(-Round) |>
-        tibble::column_to_rownames("player") |>
-        dplyr::arrange(dplyr::desc(score)) |>
-        dplyr::mutate(Rank = Rank(score), .before = 1) |>
-        dplyr::rename(`Final Score` = score)
+      .calc_final_score(self, private)
     },
     save = function(..., use_gcs = get_golem_config("use_gcs")) {
       file <- file.path(..., paste0(private$id, ".rds"))
-      
+
       if (!dir.exists(dirname(file))) {
         dir.create(dirname(file), recursive = TRUE)
       }
-      
+
       saveRDS(self, file)
-      
+
       if (use_gcs) {
         googleCloudStorageR::gcs_upload(file = file, name = file)
       }
@@ -216,10 +187,17 @@ Game <- R6::R6Class(
         readRDS(file)
       }
       private$round <- loaded$get_round()
-      private$players <- purrr::map(seq_len(loaded$num_players()),
-                                    \(pos) loaded$get_player(pos)$clone(deep = TRUE))
+      private$players <- purrr::map(
+        seq_len(loaded$num_players()),
+        \(pos) loaded$get_player(pos)$clone(deep = TRUE)
+      )
       private$bid_stage <- loaded$get_bid_stage()
       private$order <- loaded$get_order()
     }
   )
 )
+
+# Function to determine the number of cards dealt in the round
+card_seq <- function(round, max_cards = 7) {
+  c(max_cards:1, 2:max_cards)[round]
+}

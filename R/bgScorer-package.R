@@ -2,9 +2,10 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+#' @import R6
 #' @importFrom gargoyle init
 #' @importFrom gargoyle trigger
 #' @importFrom gargoyle watch
-#' @import R6
+#' @importFrom rlang .data
 ## usethis namespace: end
 NULL
