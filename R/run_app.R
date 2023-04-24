@@ -17,7 +17,7 @@ run_app <- function(onStart = bg_gcs_auth, # nolint
       ui = app_ui,
       server = app_server,
       onStart = onStart,
-      options = options,
+      options = options, # nolint undesirable_function_linter
       enableBookmarking = enableBookmarking,
       uiPattern = uiPattern
     ),

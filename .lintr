@@ -1,4 +1,13 @@
-linters: linters_with_defaults(
-    object_usage_linter=NULL
+linters: linters_with_tags(
+  tags = NULL,
+  packages = "lintr",
+  extraction_operator_linter = NULL,
+  implicit_integer_linter = NULL,
+  object_name_linter = object_name_linter(styles = c("snake_case", "symbols", "CamelCase"))
   )
 encoding: "UTF-8"
+exclusions: list(
+  "renv",
+  "packrat",
+  "tests/testthat.R"
+  )

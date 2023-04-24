@@ -22,8 +22,6 @@
 }
 
 .output_table <- function(self, private) {
-  num_players <- self$num_players()
-
   self$calc_table() |>
     tidyr::pivot_wider(
       names_from = "player",
@@ -39,6 +37,8 @@
 
 
 .play_table <- function(self, private) {
+  # Set the Kable options to display missing values as empty strings
+  withr::local_options(knitr.kable.NA = "")
   num_players <- self$num_players()
 
   groups <- c(1, rep(3, num_players), 1, 1) |>
@@ -101,6 +101,7 @@
     dplyr::select(-"Round") |>
     tibble::column_to_rownames("player") |>
     dplyr::arrange(dplyr::desc(.data$score)) |>
-    dplyr::mutate(Rank = Rank(.data$score), .before = 1) |>
+    dplyr::mutate(Rank = dplyr::min_rank(dplyr::desc(.data$score)),
+                  .before = 1) |>
     dplyr::rename("Final Score" = "score")
 }
