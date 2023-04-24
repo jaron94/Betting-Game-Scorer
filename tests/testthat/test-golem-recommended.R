@@ -3,7 +3,7 @@ test_that("app ui", {
   golem::expect_shinytaglist(ui)
   # Check that formals have not been removed
   fmls <- formals(app_ui)
-  for (i in c("request")) {
+  for (i in "request") {
     expect_true(i %in% names(fmls))
   }
 })

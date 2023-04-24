@@ -23,7 +23,7 @@ test_that("'Game' class works", {
     score = c(1 + 10, 2 + 10, 4)
   )
 
-  expect_equal(
+  expect_identical(
     game$calc_table() |> dplyr::select(player, score),
     expected_scores
   )
@@ -38,6 +38,6 @@ test_that("'Game' class works", {
     game_orig <- game$clone(deep = TRUE)
     game$save(sg_dir)
     game$load(id, sg_dir)
-    expect_equal(game_orig, game)
+    expect_identical(game_orig, game)
   })
 })

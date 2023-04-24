@@ -1,6 +1,3 @@
-# Set the Kable options to display missing values as empty strings
-options(knitr.kable.NA = "")
-
 utils::globalVariables(
   c(
     "Round", "Table", "Final Score", "player", "temp", "TEMP", "Stage",
@@ -130,7 +127,7 @@ app_server <- function(input, output, session) {
         paste0(
           "Congratulations ",
           final_scores |>
-            dplyr::filter(Rank == 1) |>
+            dplyr::filter(.data$Rank == 1) |>
             rownames() |>
             paste(collapse = " and "),
           "!"

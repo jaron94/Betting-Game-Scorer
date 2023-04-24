@@ -37,9 +37,10 @@ test_that("{shinytest2} recording: Betting-Game-Scorer", {
 
   game <- app$get_value(export = "game")
 
-  final_scores_server <- game$calc_final_score()
+  final_scores_server <- game$calc_final_score() |>
+    dplyr::mutate(`Final Score` = as.integer(.data$`Final Score`))
 
-  expect_equal(final_scores_ui, final_scores_server)
+  testthat::expect_identical(final_scores_ui, final_scores_server)
 })
 
 test_reload <- function(players) {
@@ -52,7 +53,7 @@ test_reload <- function(players) {
   app2 <- start_app()
   app2$click("reload")
   loaded_game <- app2$get_value(export = "game")
-  expect_equal(game, loaded_game)
+  testthat::expect_identical(game, loaded_game)
   sim_tricks(app2, players)
   game2 <- app2$get_value(export = "game")
   app2$click("save_game")
@@ -60,7 +61,7 @@ test_reload <- function(players) {
   app3 <- start_app()
   app3$click("reload")
   loaded_game2 <- app3$get_value(export = "game")
-  expect_equal(game2, loaded_game2)
+  expect_identical(game2, loaded_game2)
 }
 
 test_that("Reloading game works", {

@@ -16,7 +16,7 @@ start_app <- function(
     width = width,
     seed = seed,
     timeout = timeout,
-    options = options,
+    options = options, # nolint undesirable_function_linter
     ...
   )
 
@@ -24,7 +24,7 @@ start_app <- function(
 
   app$wait_for_value(input = "num_players")
 
-  testthat::expect_equal(app$get_value(input = "num_players"), "2")
+  testthat::expect_identical(app$get_value(input = "num_players"), "2")
 
   app
 }
@@ -37,7 +37,7 @@ setup_game <- function(app, players) {
     input = paste0(players[1], "BR"),
     ignore = list(NULL)
   )
-  testthat::expect_equal(
+  testthat::expect_identical(
     app$get_values(input = paste0(players, "BR")) |>
       purrr::flatten() |>
       purrr::flatten_chr(),
@@ -81,15 +81,15 @@ sim_bids <- function(app, players, valid = TRUE) {
 
     testthat::expect_null(app$get_html(sweet_alert_button))
 
-    testthat::expect_equal(
+    testthat::expect_identical(
       app$get_values(input = paste0(players, "PR")) |>
         purrr::flatten() |>
         purrr::flatten_chr(),
       rep("", length(players))
     )
   } else {
-    testthat::expect_equal(app$get_text(sweet_alert_title), "Error")
-    testthat::expect_equal(app$get_text(sweet_alert_button), "Ok")
+    testthat::expect_identical(app$get_text(sweet_alert_title), "Error")
+    testthat::expect_identical(app$get_text(sweet_alert_button), "Ok")
 
     app$click(selector = sweet_alert_button)
   }
@@ -126,7 +126,12 @@ sim_tricks <- function(app, players, valid = TRUE) {
   if (valid) {
     app$wait_for_idle()
 
-    loss_indicator <- app$get_html("body > div.swal2-container.swal2-center.swal2-backdrop-show > div > div.swal2-icon.swal2-info.swal2-icon-show")
+    loss_indicator <- app$get_html(
+      paste(
+        "body > div.swal2-container.swal2-center.swal2-backdrop-show",
+        "> div > div.swal2-icon.swal2-info.swal2-icon-show"
+      )
+    )
 
     if (!is.null(loss_indicator)) {
       app$click(selector = sweet_alert_button)
@@ -136,21 +141,13 @@ sim_tricks <- function(app, players, valid = TRUE) {
 
     testthat::expect_null(app$get_html(sweet_alert_button))
   } else {
-    testthat::expect_equal(app$get_text(sweet_alert_title), "Error")
-    testthat::expect_equal(app$get_text(sweet_alert_button), "Ok")
+    testthat::expect_identical(app$get_text(sweet_alert_title), "Error")
+    testthat::expect_identical(app$get_text(sweet_alert_button), "Ok")
 
     app$click(selector = sweet_alert_button)
   }
 }
 
-# google_auth_config_test <- function(app_dir = test_path("test_app"),
-#                                     envir = parent.frame()) {
-#   base_path <- file.path(app_dir, Sys.getenv("GOOGLE_CREDS_BASE"))
-#   creds_path <- withr::local_file(file.path(app_dir, "creds.json"),
-#                                   .local_envir = envir)
-#   google_auth_config(base = base_path, complete = creds_path)
-#   bg_gcs_auth(creds_path)
-# }
 
 with_gcs_dir <- function(dir, code) {
   on.exit(googleCloudStorageR::gcs_delete_all(dir))

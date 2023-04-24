@@ -6,7 +6,7 @@
 #' @export
 bg_gcs_auth <- function(file_name = "bgScorer-testing.json") {
   if (get_golem_config("use_gcs")) {
-    json <- gargle:::secret_read("bgScorer", file_name)
+    json <- gargle:::secret_read("bgScorer", file_name) # nolint operator_usage_linter
     googleCloudStorageR::gcs_auth(rawToChar(json))
     default_bucket <- Sys.getenv("GCS_DEFAULT_BUCKET")
     googleCloudStorageR::gcs_global_bucket(default_bucket)

@@ -46,7 +46,7 @@ Player <- R6::R6Class(
 )
 
 
-Game <- R6::R6Class(
+Game <- R6::R6Class( # nolint cyclocomp_linter
   "Game",
   inherit = Base,
   private = list(
@@ -59,7 +59,9 @@ Game <- R6::R6Class(
   ),
   public = list(
     get_player_names = function() {
-      if (!is.null(private$players)) purrr::map_chr(private$players, \(x) x$get_id())
+      if (!is.null(private$players)) {
+        purrr::map_chr(private$players, \(x) x$get_id())
+      }
     },
     get_player = function(pos) {
       private$players[[pos]]
@@ -73,10 +75,16 @@ Game <- R6::R6Class(
         cat("Round:", private$round, "\n")
       }
       if (private$round >= 1 || !private$bid_stage) {
-        cat("Bids:", purrr::map(private$players, \(x) x$get_bids()) |> unlist() |> toString(), "\n")
+        cat("Bids:", purrr::map(
+          private$players,
+          \(x) x$get_bids()
+        ) |> unlist() |> toString(), "\n")
       }
       if (private$round >= 1) {
-        cat("Scores:", purrr::map(private$players, \(x) x$get_ntricks()) |> unlist() |> toString(), "\n")
+        cat("Scores:", purrr::map(
+          private$players,
+          \(x) x$get_ntricks()
+        ) |> unlist() |> toString(), "\n")
       }
     },
     add_player = function(player) {
@@ -113,7 +121,7 @@ Game <- R6::R6Class(
       invisible(self)
     },
     record_bids = function(bids) {
-      if (any(is.na(bids))) stop("Not all players have bid")
+      if (anyNA(bids)) stop("Not all players have bid")
       if (sum(bids) == self$num_cards()) stop("You are currently exactly bid")
 
       purrr::walk2(
@@ -124,7 +132,7 @@ Game <- R6::R6Class(
       invisible(self)
     },
     record_tricks = function(tricks) {
-      if (any(is.na(tricks))) {
+      if (anyNA(tricks)) {
         stop("Tricks have not been recorded for all players")
       }
 
