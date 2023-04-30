@@ -20,8 +20,6 @@ start_app <- function(
     ...
   )
 
-  withr::defer_parent(saveRDS(app$get_logs(), tempfile()))
-
   app$wait_for_value(input = "num_players")
 
   testthat::expect_identical(app$get_value(input = "num_players"), "2")
