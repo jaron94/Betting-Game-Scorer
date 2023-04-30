@@ -11,8 +11,7 @@ test_that("{shinytest2} recording: Betting-Game-Scorer", {
     P3 = "Mum"
   )
 
-  app <- start_app()
-  app$log_message("Running full game test")
+  app <- start_app(name = "full_game_test")
   setup_game(app, players)
 
   sim_bids(app, players, valid = FALSE)
@@ -43,8 +42,8 @@ test_that("{shinytest2} recording: Betting-Game-Scorer", {
   testthat::expect_identical(final_scores_ui, final_scores_server)
 })
 
-test_reload <- function(players) {
-  app <- start_app()
+test_reload <- function(name, players) {
+  app <- start_app(name = name)
   setup_game(app, players)
   sim_bids(app, players)
   game <- app$get_value(export = "game")
@@ -75,7 +74,7 @@ test_that("Reloading game works", {
     P3 = "Mum"
   )
 
-  test_reload(players)
+  test_reload("local_reload", players)
 })
 
 test_that("Reloading game works with GCS", {
@@ -96,5 +95,5 @@ test_that("Reloading game works with GCS", {
     P3 = "Mum"
   )
 
-  test_reload(players)
+  test_reload("gcs_reload", players)
 })
