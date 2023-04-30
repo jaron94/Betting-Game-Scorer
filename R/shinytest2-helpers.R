@@ -146,6 +146,27 @@ sim_tricks <- function(app, players, valid = TRUE) {
   }
 }
 
+test_reload <- function(name, players) {
+  app <- start_app(name = name)
+  setup_game(app, players)
+  sim_bids(app, players)
+  game <- app$get_value(export = "game")
+  app$click("save_game")
+  
+  app2 <- start_app()
+  app2$click("reload")
+  loaded_game <- app2$get_value(export = "game")
+  testthat::expect_identical(game, loaded_game)
+  sim_tricks(app2, players)
+  game2 <- app2$get_value(export = "game")
+  app2$click("save_game")
+  
+  app3 <- start_app()
+  app3$click("reload")
+  loaded_game2 <- app3$get_value(export = "game")
+  testthat::expect_identical(game2, loaded_game2)
+}
+
 
 with_gcs_dir <- function(dir, code) {
   on.exit(googleCloudStorageR::gcs_delete_all(dir))
