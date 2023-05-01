@@ -1,3 +1,20 @@
+expect_round <- function(game, round) {
+  testthat::expect_identical(game$get_round(), round)
+}
+
+expect_order <- function(game, order) {
+  testthat::expect_identical(game$get_order(), order)
+}
+
+play_round <- function(game, exp_order, exp_round, bids, tricks) {
+  expect_order(game, exp_order)
+  expect_round(game, exp_round)
+  testthat::expect_no_error(game$record_bids(bids))
+  testthat::expect_no_error(game$output_table())
+  testthat::expect_no_error(game$record_tricks(tricks))
+  testthat::expect_no_error(game$output_table())
+}
+
 test_that("'Game' class works", {
   withr::local_options(bgScorer.use_gcs = FALSE)
 
@@ -9,14 +26,25 @@ test_that("'Game' class works", {
     "Player3"
   )
 
+  # Round 0
+  expect_round(game, 0)
   game$add_players(purrr::map(players, \(x) Player$new(x)))
 
+  # Round 1
+  expect_order(game, players)
+  expect_round(game, 1)
   expect_error(game$record_bids(c(1, 2, 4)), "exactly bid")
   expect_no_error(game$record_bids(c(1, 2, 3)))
   expect_no_error(game$output_table())
   expect_error(game$record_tricks(c(1, 2, 3)), "tricks")
+  expect_round(game, 1)
+  expect_order(game, players)
   expect_no_error(game$record_tricks(c(1, 2, 4)))
   expect_no_error(game$output_table())
+
+  # Round 2
+  expect_round(game, 2)
+  expect_order(game, shifter(players, 1))
 
   expected_scores <- data.frame(
     player = players,
@@ -28,9 +56,16 @@ test_that("'Game' class works", {
     expected_scores
   )
 
-  expect_no_error(
-    game$loss_tracker()
-  )
+  expect_no_error(game$loss_tracker())
+
+  expect_no_error(game$record_bids(c(1, 2, 2)))
+  expect_no_error(game$record_tricks(c(1, 2, 3)))
+
+  # Round 3
+  play_round(game, shifter(players, 2), 3, c(1, 2, 3), c(1, 2, 2))
+
+  # Round 4
+  play_round(game, shifter(players, 3), 4, c(1, 2, 3), c(1, 2, 1))
 
   id <- game$get_id()
 
