@@ -109,7 +109,7 @@ Game <- R6::R6Class( # nolint cyclocomp_linter
       private$bid_stage
     },
     next_round = function() {
-      private$order <- shifter(private$order, private$round)
+      private$order <- shifter(self$get_player_names(), private$round)
       private$round <- private$round + 1
       invisible(self)
     },
