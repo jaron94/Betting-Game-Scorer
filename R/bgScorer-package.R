@@ -3,6 +3,7 @@
 
 ## usethis namespace: start
 #' @import R6
+#' @import shinyMobile
 #' @importFrom gargoyle init
 #' @importFrom gargoyle trigger
 #' @importFrom gargoyle watch

@@ -2,8 +2,10 @@
 
 export(bg_gcs_auth)
 export(run_app)
+export(run_app_mobile)
 import(R6)
 import(shiny)
+import(shinyMobile)
 importFrom(gargoyle,init)
 importFrom(gargoyle,trigger)
 importFrom(gargoyle,watch)
