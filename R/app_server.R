@@ -107,7 +107,7 @@ app_server <- function(input, output, session) {
 
     trigger("update_game")
 
-    if (game$get_round() > 12) {
+    if (game$get_round() > tot_rounds()) {
       game$save(saved_game_dir)
 
       shinyjs::hideElement("betting")
