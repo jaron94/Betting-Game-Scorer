@@ -11,3 +11,4 @@ bgscorer-f3a980df82ac.json
 creds.json
 .Rprofile
 interactive_saved_games
+tests/testthat/test_app/test_saved_games
