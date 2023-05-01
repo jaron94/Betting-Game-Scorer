@@ -8,3 +8,7 @@ shifter <- function(x, n = 1) {
 calc_points <- function(bid, tricks) {
   tricks + (bid == tricks) * 10
 }
+
+tot_rounds <- function(max_cards = 7) {
+  length(c(max_cards:1, 2:max_cards))
+}

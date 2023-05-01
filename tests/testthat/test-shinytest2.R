@@ -20,7 +20,7 @@ test_that("{shinytest2} recording: Betting-Game-Scorer", {
   sim_tricks(app, players, valid = FALSE)
   sim_tricks(app, players, valid = TRUE)
 
-  for (i in seq(2, 12)) {
+  for (i in seq(2, tot_rounds())) {
     sim_bids(app, players)
     sim_tricks(app, players)
   }
