@@ -19,6 +19,11 @@ jobs:
         with:
           use-public-rspm: true
           r-version: 'oldrel-1'
+          
+      - name: Add some R options for later steps
+        run: |
+          cat("\noptions(pkg.platforms = 'source')\n", file = "~/.Rprofile", append = TRUE)
+        shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
