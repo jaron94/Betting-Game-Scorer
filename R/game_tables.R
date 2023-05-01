@@ -101,7 +101,9 @@
     dplyr::select(-"Round") |>
     tibble::column_to_rownames("player") |>
     dplyr::arrange(dplyr::desc(.data$score)) |>
-    dplyr::mutate(Rank = dplyr::min_rank(dplyr::desc(.data$score)),
-                  .before = 1) |>
+    dplyr::mutate(
+      Rank = dplyr::min_rank(dplyr::desc(.data$score)),
+      .before = 1
+    ) |>
     dplyr::rename("Final Score" = "score")
 }

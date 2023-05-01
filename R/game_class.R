@@ -123,6 +123,7 @@ Game <- R6::R6Class( # nolint cyclocomp_linter
     record_bids = function(bids) {
       if (anyNA(bids)) stop("Not all players have bid")
       if (sum(bids) == self$num_cards()) stop("You are currently exactly bid")
+      if (!private$bid_stage) stop("Cannot record bids outside of bid stage")
 
       purrr::walk2(
         private$players, bids,
@@ -138,6 +139,10 @@ Game <- R6::R6Class( # nolint cyclocomp_linter
 
       if (sum(tricks) != self$num_cards()) {
         stop("# of tricks declared doesn't equal the total for this round")
+      }
+
+      if (private$bid_stage) {
+        stop("Tricks cannot be recorded in the bid stage")
       }
 
       purrr::walk2(
@@ -204,8 +209,3 @@ Game <- R6::R6Class( # nolint cyclocomp_linter
     }
   )
 )
-
-# Function to determine the number of cards dealt in the round
-card_seq <- function(round, max_cards = 7) {
-  c(max_cards:1, 2:max_cards)[round]
-}

@@ -21,3 +21,4 @@ $run_dev.*
 ^\.rscignore$
 ^temp_app$
 ^interactive_saved_games$
+^tests\testthat\test_app\test_saved_games$

@@ -9,6 +9,11 @@ calc_points <- function(bid, tricks) {
   tricks + (bid == tricks) * 10
 }
 
+# Function to determine the number of cards dealt in the round
+card_seq <- function(round, max_cards = 7) {
+  c(max_cards:1, 2:max_cards)[round]
+}
+
 tot_rounds <- function(max_cards = 7) {
   length(c(max_cards:1, 2:max_cards))
 }
