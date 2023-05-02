@@ -43,7 +43,7 @@ run_app_mobile <- function(onStart = bg_gcs_auth, # nolint
   with_golem_options(
     app = shinyApp(
       ui = mobile_ui,
-      server = mobile_server,
+      server = app_server,
       onStart = onStart,
       options = options, # nolint undesirable_function_linter
       enableBookmarking = enableBookmarking,
