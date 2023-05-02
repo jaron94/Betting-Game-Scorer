@@ -15,6 +15,20 @@ app_server <- function(input, output, session) {
   saved_game_dir <- get_saved_game_dir()
 
   trump_opts <- c("&spades;", "&hearts;", "&diams;", "&clubs;", "")
+  
+  is_mob <- getOption("bgScorer.mobile", FALSE)
+  
+  act_button <- if (is_mob) f7Button else actionButton
+  
+  if (is_mob) {
+    # send the theme to javascript
+    observe({
+      session$sendCustomMessage(
+        type = "ui-tweak",
+        message = list(os = input$theme, skin = input$color)
+      )
+    })
+  }
 
   game <- Game$new(Sys.time() |> as.numeric() |> as.character())
 
@@ -24,7 +38,12 @@ app_server <- function(input, output, session) {
     exportTestValues(game = game, round = game$get_round())
   })
 
-  showModal(startup_modal())
+  if (is_mob) {
+    mob_startup_modal()
+  } else {
+    showModal(startup_modal())
+  }
+  
 
   observeEvent(input$num_players, {
     max_players <- 7
@@ -63,7 +82,7 @@ app_server <- function(input, output, session) {
 
     game$save(saved_game_dir)
 
-    removeModal()
+    remove_modal(is_mob)
   })
 
   observeEvent(input$reload, {
@@ -71,7 +90,7 @@ app_server <- function(input, output, session) {
     req(game_id)
     game$load(game_id, saved_game_dir)
     trigger("update_game")
-    removeModal()
+    remove_modal(is_mob)
   })
 
   observeEvent(input$bet, {
@@ -172,12 +191,12 @@ app_server <- function(input, output, session) {
 
   output$betting <- renderUI({
     watch("update_game")
-    create_game_inputs(game, TRUE)
+    create_game_inputs(game, TRUE, is_mob)
   })
 
   output$playing <- renderUI({
     watch("update_game")
-    create_game_inputs(game, FALSE)
+    create_game_inputs(game, FALSE, is_mob)
   })
 
   output$round_info <- renderUI({
@@ -207,17 +226,20 @@ app_server <- function(input, output, session) {
 }
 
 
-create_game_inputs <- function(game, bid_stage) {
+create_game_inputs <- function(game, bid_stage, mob) {
+  picker <- if (mob) f7Select else shinyWidgets::pickerInput
+  act_button <- if (mob) f7Button else actionButton
+  
   tagList(
     purrr::map(
       game$get_order(),
-      \(name) shinyWidgets::pickerInput(
+      \(name) picker(
         paste0(name, if (bid_stage) "BR" else "PR"),
         paste0(name, if (bid_stage) " bids?" else ": how many tricks?"),
         choices = c("", 0, seq_len(game$num_cards()))
       )
     ),
-    actionButton(
+    act_button(
       if (bid_stage) "bet" else "score",
       if (bid_stage) "Enter Bids" else "Enter Results"
     )
@@ -231,4 +253,12 @@ send_error_alert <- function(text, session = getDefaultReactiveDomain()) {
     text = text,
     type = "error"
   )
+}
+
+remove_modal <- function(mob) {
+  if (mob) {
+    shinyjs::runjs("app.popup.get('.popup').close(true);")
+  } else {
+    removeModal()
+  }
 }
