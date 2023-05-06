@@ -212,7 +212,7 @@ app_server <- function(input, output, session) {
     }
   })
 
-  output$play_table <- function() {
+  output$play_table <- gt::render_gt({
     watch("update_game")
 
     curr_round <- game$get_round()
@@ -220,9 +220,9 @@ app_server <- function(input, output, session) {
     if (curr_round < 1) {
       return()
     }
-
+    
     game$play_table()
-  }
+  })
 }
 
 
