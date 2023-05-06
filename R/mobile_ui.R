@@ -31,7 +31,7 @@ mobile_ui <- function(request) {
             title = "Scores",
             tabName = "scores",
             f7Card(
-              tableOutput("play_table")
+              gt::gt_output("play_table")
             )
           ),
           animated = FALSE,

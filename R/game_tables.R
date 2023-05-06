@@ -35,39 +35,26 @@
     )
 }
 
-
 .play_table <- function(self, private) {
-  # Set the Kable options to display missing values as empty strings
-  withr::local_options(knitr.kable.NA = "")
-  num_players <- self$num_players()
-
-  groups <- c(1, rep(3, num_players), 1, 1) |>
-    purrr::set_names(c(" ", self$get_player_names(), " ", " "))
-  col_names <- c("Round", rep(private$stages, num_players), "Cards", "Suit")
-
+  player_names <- self$get_player_names()
+  
+  cols_abbrev <- c(bid = "B", tricks = "T", score = "S")
+  
   self$output_table() |>
-    kableExtra::kable(
-      format = "html",
-      digits = 0,
-      col.names = col_names,
-      escape = FALSE
+    dplyr::rename_with(
+      \(name) stringr::str_replace_all(name, cols_abbrev),
+      .cols = starts_with(player_names)
     ) |>
-    kableExtra::kable_styling(bootstrap_options = c("bordered", "striped")) |>
-    kableExtra::row_spec(0,
-      font_size = if (num_players > 6) 9.7 else NULL
-    ) |>
-    kableExtra::add_header_above(
-      groups,
-      font_size = if (num_players > 6) 14 else NULL
-    ) |>
-    kableExtra::column_spec(
-      c(1, which(col_names == "Cards"), which(col_names == "Suit")),
-      width = "2cm"
-    ) |>
-    kableExtra::column_spec(
-      seq(3, as.numeric(num_players) * 3, 3) + 1,
-      bold = TRUE
-    )
+    gt::gt() |>
+    gt::tab_spanner_delim("_", starts_with(player_names)) |>
+    gt::cols_align(align = "center") |>
+    gt::fmt_passthrough(Suit, escape = FALSE) |>
+    gt::cols_width(-c(Round, Cards, Suit) ~ px(30)) |>
+    gt::sub_missing(missing_text = "") |>
+    gt::fmt(starts_with(player_names),
+            fns = function(x) stringr::str_pad(x, 8, side = "both")) |>
+    gt::tab_style(style = gt::cell_text(whitespace = "pre-line"),
+                  locations = gt::cells_body(starts_with(player_names)))
 }
 
 

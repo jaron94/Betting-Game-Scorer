@@ -23,7 +23,7 @@ app_ui <- function(request) {
         mainPanel(
           fluidRow(column(10,
             align = "center",
-            tableOutput("play_table")
+            gt::gt_output("play_table")
           ))
         )
       )
