@@ -1,0 +1,11 @@
+.timeline-scroll {
+  box-sizing: border-box;
+  margin: var(--f7-timeline-margin-vertical) 0;
+  padding: 0 var(--f7-timeline-padding-horizontal);
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: calc(var(--f7-timeline-padding-horizontal) + var(--f7-safe-area-left));
+  padding-right: calc(var(--f7-timeline-padding-horizontal) + var(--f7-safe-area-right));
+  height: 100%;
+  overflow-y: auto;
+}
