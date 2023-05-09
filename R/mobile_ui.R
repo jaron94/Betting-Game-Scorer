@@ -22,10 +22,18 @@ mobile_ui <- function(request) {
             title = "Play",
             tabName = "play",
             active = TRUE,
-            f7Card(
+            f7Block(
+              hairlines = FALSE,
+              strong = TRUE,
+              inset = TRUE,
+              f7Flex(
                 uiOutput("betting"),
-                shinyjs::hidden(uiOutput("playing"))
-              )
+                shinyjs::hidden(uiOutput("playing")),
+                div(class = "timeline-scroll", gen_timeline_items())
+              ) |>
+                tagSetHeight("calc(100% - var(--f7-navbar-height))")
+            ) |>
+              tagSetHeight("calc(100% - var(--f7-navbar-height) - var(--f7-block-footer-margin))")
           ),
           f7Tab(
             title = "Scores",
@@ -99,5 +107,16 @@ mob_startup_modal <- function() {
       f7Button("reload", "Load Game:"),
       hairlines = FALSE
     )
+  )
+}
+
+gen_timeline_items <- function(max_rounds = 13) {
+  purrr::map(
+    seq_len(max_rounds),
+    \(round) {
+      f7TimelineItem(
+        paste("Round", round)
+      )
+    }
   )
 }
