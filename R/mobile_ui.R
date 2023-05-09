@@ -110,12 +110,21 @@ mob_startup_modal <- function() {
   )
 }
 
+f7TimelineItemDiv <- function(..., id) {
+  htmltools::tagAppendAttributes(
+    f7TimelineItem(...),
+    id = id,
+    .cssSelector = ".timeline-item-divider"
+  )
+}
+
 gen_timeline_items <- function(max_rounds = 13) {
   purrr::map(
     seq_len(max_rounds),
     \(round) {
-      f7TimelineItem(
-        paste("Round", round)
+      f7TimelineItemDiv(
+        paste("Round", round),
+        id = paste0("tl_item", round)
       )
     }
   )
