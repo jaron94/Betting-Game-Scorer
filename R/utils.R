@@ -17,3 +17,12 @@ card_seq <- function(round, max_cards = 7) {
 tot_rounds <- function(max_cards = 7) {
   length(c(max_cards:1, 2:max_cards))
 }
+
+tagSetStyle <- function(tag, style, .cssSelector = NULL) {
+  tagAppendAttributes(tag, style = style, .cssSelector = .cssSelector)
+}
+
+tagSetHeight <- function(tag, height, .cssSelector = NULL) {
+  tagSetStyle(tag, style = paste0("height: ", height, ";"),
+              .cssSelector = .cssSelector)
+}
