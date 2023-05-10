@@ -6,6 +6,6 @@
   padding-bottom: 0;
   padding-left: calc(var(--f7-timeline-padding-horizontal) + var(--f7-safe-area-left));
   padding-right: calc(var(--f7-timeline-padding-horizontal) + var(--f7-safe-area-right));
-  height: 100%;
+  height: calc(100% - 2 * var(--f7-timeline-margin-vertical));
   overflow-y: auto;
 }

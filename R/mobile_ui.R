@@ -22,18 +22,24 @@ mobile_ui <- function(request) {
             title = "Play",
             tabName = "play",
             active = TRUE,
-            f7Block(
-              hairlines = FALSE,
-              strong = TRUE,
-              inset = TRUE,
-              f7Flex(
+            f7Flex(
+              f7Block(
+                hairlines = FALSE,
+                strong = TRUE,
+                inset = TRUE,
                 uiOutput("betting"),
-                shinyjs::hidden(uiOutput("playing")),
+                shinyjs::hidden(uiOutput("playing"))
+              ) |>
+                tagSetHeight("100%"),
+              f7Block(
+                hairlines = FALSE,
+                strong = TRUE,
+                inset = TRUE,
                 div(class = "timeline-scroll", gen_timeline_items())
               ) |>
-                tagSetHeight("calc(100% - var(--f7-navbar-height))")
+                tagSetHeight("100%")
             ) |>
-              tagSetHeight("calc(100% - var(--f7-navbar-height) - var(--f7-block-footer-margin))")
+              tagSetHeight("calc(100% - var(--f7-navbar-height))")
           ),
           f7Tab(
             title = "Scores",
@@ -73,6 +79,10 @@ mobile_ui <- function(request) {
     )
   )
 }
+
+# Container for bid/tricks inputs that ensures they fit in one screen
+
+
 
 # Function to create the modal dialog on startup to set up the game
 mob_startup_modal <- function() {
