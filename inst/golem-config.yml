@@ -11,3 +11,5 @@ production:
   app_prod: yes
   bg_games_dir: saved_games
   use_gcs: TRUE
+dev:
+  golem_wd: !expr pkgload::pkg_path()
