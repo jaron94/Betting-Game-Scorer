@@ -227,23 +227,51 @@ app_server <- function(input, output, session) {
 
 
 create_game_inputs <- function(game, bid_stage, mob) {
-  picker <- if (mob) f7Select else shinyWidgets::pickerInput
+  picker <- if (mob) f7Picker else shinyWidgets::pickerInput
   act_button <- if (mob) f7Button else actionButton
   
+  num_players <- game$num_players()
+  
+  input_height <- "var(--f7-input-height)"
+  default_margin <- "var(--f7-list-margin-vertical)"
+  total_margin <- glue::glue("(80% - {input_height} * {num_players})")
+  margin_per_input <- glue::glue("{total_margin} / {num_players}") # nolint: nonportable_path_linter.
+  
+  margin <- glue::glue(
+    "calc(min({margin_per_input}, {default_margin} * 2))"
+  )
+  
+  row_style <- glue::glue("margin: {margin} 0; width: 100%")
+  
+  gen_picker <- function(name) {
+    f7Row(
+      picker(
+        inputId = paste0(name, if (bid_stage) "BR" else "PR"),
+        label = name,
+        choices = c("", 0, seq_len(game$num_cards())),
+        placeholder = if (bid_stage) "bids?" else ": how many tricks?"
+      ),
+      gap = FALSE
+    )
+  }
+  
+  pickers <- htmltools::tagQuery(purrr::map(game$get_order(), gen_picker))$
+    addAttrs(style = row_style)$
+    find(".block-title")$addAttrs(style = "width: 40%; box-sizing: border-box;")$
+    resetSelected()$
+    find(".list")$addAttrs(style = "margin: 0; width: 60%")$
+    allTags()
+  
   tagList(
-    purrr::map(
-      game$get_order(),
-      \(name) picker(
-        paste0(name, if (bid_stage) "BR" else "PR"),
-        paste0(name, if (bid_stage) " bids?" else ": how many tricks?"),
-        choices = c("", 0, seq_len(game$num_cards()))
+    f7Row(pickers),
+    f7Row(
+      act_button(
+        if (bid_stage) "bet" else "score",
+        if (bid_stage) "Enter Bids" else "Enter Results"
       )
-    ),
-    act_button(
-      if (bid_stage) "bet" else "score",
-      if (bid_stage) "Enter Bids" else "Enter Results"
     )
   )
+    
 }
 
 send_error_alert <- function(text, session = getDefaultReactiveDomain()) {
