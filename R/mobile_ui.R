@@ -22,16 +22,16 @@ mobile_ui <- function(request) {
             title = "Play",
             tabName = "play",
             active = TRUE,
-              f7Block(
-                hairlines = FALSE,
-                strong = TRUE,
-                inset = FALSE,
-                uiOutput("betting"),
-                shinyjs::hidden(uiOutput("playing")),
-                f7BlockFooter(
-                  "Round1"
-                )
-              ) |>
+            f7Block(
+              hairlines = FALSE,
+              strong = TRUE,
+              inset = FALSE,
+              uiOutput("betting"),
+              shinyjs::hidden(uiOutput("playing")),
+              f7BlockFooter(
+                "Round1"
+              )
+            ) |>
               tagSetHeight("calc(100% - 2 * var(--f7-block-margin-vertical))")
           ),
           f7Tab(
@@ -80,15 +80,15 @@ mobile_ui <- function(request) {
 # Function to create the modal dialog on startup to set up the game
 mob_startup_modal <- function() {
   saved_games <- get_saved_games()
-  
+
   max_players <- 7
-  
+
   num_players_opts <- seq(2, max_players)
-  
+
   player_inputs <- purrr::map(
     num_players_opts, \(x) f7Text(paste0("P", x), NULL)
   )
-  
+
   f7Popup(
     id = "setup_popup",
     title = "Game Set-up",

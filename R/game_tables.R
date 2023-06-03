@@ -37,9 +37,9 @@
 
 .play_table <- function(self, private) {
   player_names <- self$get_player_names()
-  
+
   cols_abbrev <- c(bid = "B", tricks = "T", score = "S")
-  
+
   self$output_table() |>
     dplyr::rename_with(
       \(name) stringr::str_replace_all(name, cols_abbrev),
@@ -52,9 +52,12 @@
     gt::cols_width(-c(Round, Cards, Suit) ~ px(30)) |>
     gt::sub_missing(missing_text = "") |>
     gt::fmt(starts_with(player_names),
-            fns = function(x) stringr::str_pad(x, 8, side = "both")) |>
-    gt::tab_style(style = gt::cell_text(whitespace = "pre-line"),
-                  locations = gt::cells_body(starts_with(player_names)))
+      fns = function(x) stringr::str_pad(x, 8, side = "both")
+    ) |>
+    gt::tab_style(
+      style = gt::cell_text(whitespace = "pre-line"),
+      locations = gt::cells_body(starts_with(player_names))
+    )
 }
 
 
