@@ -23,6 +23,8 @@ tagSetStyle <- function(tag, style, .cssSelector = NULL) {
 }
 
 tagSetHeight <- function(tag, height, .cssSelector = NULL) {
-  tagSetStyle(tag, style = paste0("height: ", height, ";"),
-              .cssSelector = .cssSelector)
+  tagSetStyle(tag,
+    style = paste0("height: ", height, ";"),
+    .cssSelector = .cssSelector
+  )
 }
