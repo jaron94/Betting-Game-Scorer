@@ -22,24 +22,17 @@ mobile_ui <- function(request) {
             title = "Play",
             tabName = "play",
             active = TRUE,
-            f7Flex(
               f7Block(
                 hairlines = FALSE,
                 strong = TRUE,
-                inset = TRUE,
+                inset = FALSE,
                 uiOutput("betting"),
-                shinyjs::hidden(uiOutput("playing"))
+                shinyjs::hidden(uiOutput("playing")),
+                f7BlockFooter(
+                  "Round1"
+                )
               ) |>
-                tagSetHeight("100%"),
-              f7Block(
-                hairlines = FALSE,
-                strong = TRUE,
-                inset = TRUE,
-                div(class = "timeline-scroll", gen_timeline_items())
-              ) |>
-                tagSetHeight("100%")
-            ) |>
-              tagSetHeight("calc(100% - var(--f7-navbar-height))")
+              tagSetHeight("calc(100% - 2 * var(--f7-block-margin-vertical))")
           ),
           f7Tab(
             title = "Scores",
