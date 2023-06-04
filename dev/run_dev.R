@@ -16,8 +16,10 @@ host <- getOption("shiny.host", "127.0.0.1")
 
 appPath <- "app_mobile.R"
 
+rhome <- Sys.getenv("R_HOME")
+
 app_proc <- processx::process$new(
-  "R",
+  file.path(rhome, "bin", "R.exe"),
   args = c(
     "-e",
     glue::glue(
@@ -30,5 +32,12 @@ app_proc <- processx::process$new(
 
 Sys.sleep(5)
 
-shinyMobile::preview_mobile(url = paste0("http://", host, ":", port),
-                            device = "iphoneX")
+withr::with_options(
+  list(
+    browser = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" # nolint: absolute_path_linter
+  ),
+  shinyMobile::preview_mobile(
+    url = paste0("http://", host, ":", port),
+    device = "iphoneX"
+  )
+)
