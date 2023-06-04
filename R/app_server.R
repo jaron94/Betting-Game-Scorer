@@ -52,7 +52,7 @@ app_server <- function(input, output, session) {
 
     # Always show the first two player name inputs
     for (player_id in seq(3, max_players)) {
-      shinyjs::toggle(paste0("P", player_id),
+      shinyjs::toggle(paste0("liP", player_id),
         condition = player_id <= n_players
       )
     }
