@@ -191,11 +191,13 @@ app_server <- function(input, output, session) {
 
   output$betting <- renderUI({
     watch("update_game")
+    req(game$get_round() > 0)
     create_game_inputs(game, TRUE, is_mob)
   })
 
   output$playing <- renderUI({
     watch("update_game")
+    req(game$get_round() > 0)
     create_game_inputs(game, FALSE, is_mob)
   })
 
@@ -233,15 +235,19 @@ create_game_inputs <- function(game, bid_stage, mob) {
   num_players <- game$num_players()
 
   input_height <- "var(--f7-input-height)"
-  default_margin <- "var(--f7-list-margin-vertical)"
-  total_margin <- glue::glue("(80% - {input_height} * {num_players})")
-  margin_per_input <- glue::glue("{total_margin} / {num_players}") # nolint: nonportable_path_linter.
+  list_margin <- "var(--f7-list-margin-vertical)"
 
-  margin <- glue::glue(
-    "calc(min({margin_per_input}, {default_margin} * 2))"
+  row_min_height <- glue::glue("calc({input_height} + 2 * {list_margin})")
+  row_style <- glue::glue(
+    "margin: 0; width: 100%; align-items: center; ",
+    "min-height: {row_min_height}; ",
+    "height: calc(80% / {num_players})"
   )
-
-  row_style <- glue::glue("margin: {margin} 0; width: 100%")
+  list_style <- "margin: 0; width: 60%"
+  bt_style <- glue::glue(
+    "margin-top: var(--f7-block-title-margin-bottom);",
+    "width: calc(40% - 2 * var(--f7-block-padding-horizontal))"
+  )
 
   gen_picker <- function(name) {
     f7Row(
@@ -257,19 +263,20 @@ create_game_inputs <- function(game, bid_stage, mob) {
 
   pickers <- htmltools::tagQuery(purrr::map(game$get_order(), gen_picker))$
     addAttrs(style = row_style)$
-    find(".block-title")$addAttrs(style = "width: 40%; box-sizing: border-box;")$
+    find(".block-title")$addAttrs(style = bt_style)$
     resetSelected()$
-    find(".list")$addAttrs(style = "margin: 0; width: 60%")$
+    find(".list")$addAttrs(style = list_style)$
     allTags()
 
   tagList(
-    f7Row(pickers),
+    pickers,
     f7Row(
       act_button(
         if (bid_stage) "bet" else "score",
         if (bid_stage) "Enter Bids" else "Enter Results"
       )
-    )
+    ) |>
+      tagSetHeight("20%")
   )
 }
 
