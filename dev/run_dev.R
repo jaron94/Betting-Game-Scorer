@@ -16,19 +16,21 @@ host <- getOption("shiny.host", "127.0.0.1")
 
 appPath <- "app_mobile.R"
 
-rhome <- Sys.getenv("R_HOME")
+app_manager <<- shinybg:::app_manager # nolint: undesirable_operator_linter
 
-app_proc <- processx::process$new(
-  file.path(rhome, "bin", "R.exe"),
-  args = c(
-    "-e",
-    glue::glue(
-      "shiny::runApp('{appPath}', port = {port}, launch.browser = FALSE)"
-    )
-  ),
-  cleanup = TRUE,
-  cleanup_tree = TRUE
+if (port %in% app_manager$list_ports()) {
+  app_manager$kill_app(port)
+}
+
+app <- callr::r_bg(
+  function(appPath, port) {
+    shiny::runApp(appPath, port = port, launch.browser = FALSE)
+  },
+  args = list(appPath = appPath, port = port),
+  supervise = TRUE
 )
+
+app_manager$register_app(port, app)
 
 Sys.sleep(5)
 
