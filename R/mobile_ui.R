@@ -86,8 +86,14 @@ mob_startup_modal <- function() {
   num_players_opts <- seq(2, max_players)
 
   player_inputs <- purrr::map(
-    num_players_opts, \(x) f7Text(paste0("P", x), NULL)
+    num_players_opts, \(x) f7Text(paste0("P", x), NULL) |>
+      tagAppendAttributes(id = paste0("liP", x))
   )
+
+  pinput_style <- "width: 50%; margin-top: 0;"
+
+  # player_inputs <- htmltools::tagQuery(player_inputs)$
+  #   addClass("player_input")$removeClass("list")$allTags()
 
   f7Popup(
     id = "setup_popup",
@@ -98,7 +104,9 @@ mob_startup_modal <- function() {
       f7Flex(
         f7Text("P1", NULL, placeholder = "Who deals first?"),
         player_inputs
-      ),
+      ) |>
+        tagAppendAttributes(style = "flex-wrap: wrap;") |>
+        tagAppendAttributes(style = pinput_style, .cssSelector = ".list"),
       f7Row(
         f7Button("set_up", "New Game")
       ),
