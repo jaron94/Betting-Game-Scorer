@@ -26,8 +26,8 @@ mobile_ui <- function(request) {
               hairlines = FALSE,
               strong = TRUE,
               inset = FALSE,
-              uiOutput("betting"),
-              shinyjs::hidden(uiOutput("playing")),
+              uiOutput("betting", style = "height: 85%;"),
+              shinyjs::hidden(uiOutput("playing", style = "height: 85%;")),
               f7BlockFooter(
                 "Round1"
               )
@@ -50,7 +50,7 @@ mobile_ui <- function(request) {
         )
       ),
       options = list(
-        theme = c("auto"),
+        theme = "auto",
         dark = FALSE,
         filled = FALSE,
         color = "#007aff",
