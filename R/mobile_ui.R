@@ -11,11 +11,9 @@ mobile_ui <- function(request) {
       title = "Betting Game Scorer",
       f7TabLayout(
         navbar = f7Navbar(
-          title = "Navigate",
+          title = "The Betting Game",
           hairline = FALSE,
-          shadow = TRUE,
-          leftPanel = TRUE,
-          rightPanel = TRUE
+          shadow = TRUE
         ),
         f7Tabs(
           f7Tab(
@@ -43,10 +41,6 @@ mobile_ui <- function(request) {
           ),
           animated = FALSE,
           swipeable = TRUE
-        ),
-        panels = tagList(
-          f7Panel(title = "Left Panel", side = "left", theme = "light", "Blabla", effect = "cover"),
-          f7Panel(title = "Right Panel", side = "right", theme = "dark", "Blabla", effect = "cover")
         )
       ),
       options = list(
@@ -91,9 +85,6 @@ mob_startup_modal <- function() {
   )
 
   pinput_style <- "width: 50%; margin-top: 0;"
-
-  # player_inputs <- htmltools::tagQuery(player_inputs)$
-  #   addClass("player_input")$removeClass("list")$allTags()
 
   f7Popup(
     id = "setup_popup",
