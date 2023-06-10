@@ -44,18 +44,26 @@ app_server <- function(input, output, session) {
     showModal(startup_modal())
   }
 
+  observe({
+    purrr::map(
+      seq_len(7),
+      \(x) {
+        golem::invoke_js(
+          "genSmartSelectImg",
+          list(
+            src = req(input[[paste0("A", x)]]),
+            i = x
+          )
+        )
+      }
+    )
+  })
 
   observeEvent(input$num_players, {
-    max_players <- 7
-
-    n_players <- as.integer(input$num_players)
-
-    # Always show the first two player name inputs
-    for (player_id in seq(3, max_players)) {
-      shinyjs::toggle(paste0("liP", player_id),
-        condition = player_id <= n_players
-      )
-    }
+    golem::invoke_js(
+      "toggle_inputs",
+      list(as.integer(input$num_players))
+    )
   })
 
   observeEvent(input$set_up, {
@@ -68,9 +76,23 @@ app_server <- function(input, output, session) {
       send_error_alert(text = "Names not recorded for all players")
     }
 
-    purrr::walk(player_names, req)
+    avatars <- purrr::map_chr(
+      seq_len(input$num_players),
+      \(x) input[[paste0("A", x)]]
+    )
 
-    players <- purrr::map(player_names, \(x) Player$new(x))
+    if (any(avatars == "")) {
+      send_error_alert(text = "Avatars not recorded for all players")
+    }
+
+    purrr::walk(player_names, req)
+    purrr::walk(avatars, req)
+
+    players <- purrr::map2(
+      player_names,
+      avatars,
+      \(name, avatar) Player$new(name, avatar)
+    )
 
     game$add_players(players)
 
