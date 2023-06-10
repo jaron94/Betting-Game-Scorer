@@ -24,9 +24,12 @@ if (port %in% app_manager$list_ports()) {
 
 app <- callr::r_bg(
   function(appPath, port) {
+    options(shiny.trace=TRUE)
     shiny::runApp(appPath, port = port, launch.browser = FALSE)
   },
   args = list(appPath = appPath, port = port),
+  stdout = "shinybg.log",
+  stderr = "shinybgerr.log",
   supervise = TRUE
 )
 
