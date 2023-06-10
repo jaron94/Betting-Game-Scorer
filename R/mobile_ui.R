@@ -21,14 +21,13 @@ mobile_ui <- function(request) {
             tabName = "play",
             active = TRUE,
             f7Block(
-              hairlines = FALSE,
+              f7BlockHeader(uiOutput("round_info", inline = TRUE)) |>
+                tagSetStyle("font-size: 20px"),
+              hairlines = TRUE,
               strong = TRUE,
               inset = FALSE,
               uiOutput("betting", style = "height: 85%;"),
-              shinyjs::hidden(uiOutput("playing", style = "height: 85%;")),
-              f7BlockFooter(
-                "Round1"
-              )
+              shinyjs::hidden(uiOutput("playing", style = "height: 85%;"))
             ) |>
               tagSetHeight("calc(100% - 2 * var(--f7-block-margin-vertical))")
           ),
@@ -68,8 +67,39 @@ mobile_ui <- function(request) {
 }
 
 # Container for bid/tricks inputs that ensures they fit in one screen
+gen_avatar_inputs <- function(num_players_opts) {
 
+  avatar_opts <- app_sys("app", "www", "icons") |>
+    list.files(pattern = "\\.svg$")
 
+  avatar_imgs <- file.path("www", "icons", avatar_opts)
+
+  avatar_inputs <- purrr::map(
+    seq(num_players_opts),
+    \(x) {
+      input <- f7SmartSelect(
+        paste0("A", x),
+        "",
+        choices = setNames(avatar_imgs, rep(" ", length(avatar_imgs))),
+        openIn = "popover",
+        closeOnSelect = TRUE,
+        selected = avatar_imgs[x],
+        searchbar = FALSE
+      ) |>
+        htmltools::tagQuery()
+
+      input$find("option")$each(
+        \(x, i) tagAppendAttributes(
+          x,
+          `data-option-image` = avatar_imgs[i]
+        )
+      )
+      input$allTags()
+    }
+  )
+
+  avatar_inputs
+}
 
 # Function to create the modal dialog on startup to set up the game
 mob_startup_modal <- function() {
@@ -79,30 +109,34 @@ mob_startup_modal <- function() {
 
   num_players_opts <- seq(2, max_players)
 
-  player_inputs <- purrr::map(
-    num_players_opts, \(x) f7Text(paste0("P", x), NULL) |>
-      tagAppendAttributes(id = paste0("liP", x))
+  pinput_style <- "margin-top: 0;"
+
+  player_inputs <- c(
+    list(f7Text("P1", NULL, placeholder = "Who deals first?")),
+    purrr::map(
+      num_players_opts, \(x) f7Text(paste0("P", x), NULL)
+    )
   )
 
-  pinput_style <- "width: 50%; margin-top: 0;"
+  avatar_inputs <- gen_avatar_inputs(seq_len(max_players))
 
   f7Popup(
     id = "setup_popup",
     title = "Game Set-up",
+    # avatar_inputs,
     f7Block(
       f7BlockHeader("Start new game"),
       f7Select("num_players", "How many players?", choices = num_players_opts),
       f7Flex(
-        f7Text("P1", NULL, placeholder = "Who deals first?"),
-        player_inputs
-      ) |>
-        tagAppendAttributes(style = "flex-wrap: wrap;") |>
-        tagAppendAttributes(style = pinput_style, .cssSelector = ".list"),
+        f7Flex(player_inputs, id = "pinputs"),
+        f7Flex(avatar_inputs, id = "ainputs")
+      ) |> tagSetStyle("width: 100%; flex-wrap: wrap;"),
       f7Row(
         f7Button("set_up", "New Game")
       ),
       hairlines = FALSE
-    ),
+    ) |>
+      tagSetStyle("width: 100%;"),
     f7Block(
       f7BlockHeader("Load saved game"),
       f7Select("saved_game_id", NULL, choices = saved_games),
