@@ -256,24 +256,24 @@ create_game_inputs <- function(game, bid_stage, mob) {
 
   num_players <- game$num_players()
 
-  gen_picker <- function(name) {
-    f7Row(
-      tags$div(
-      picker(
-        inputId = paste0(name, if (bid_stage) "BR" else "PR"),
-        label = name,
-        choices = c("", 0, seq_len(game$num_cards())),
-        placeholder = if (bid_stage) "bids?" else ": how many tricks?"
-      ),
-      class = "picker_container"
-      ),
-      gap = FALSE
-    ) |>
-      tagAppendAttributes(class = "ginputs")
+  gen_picker <- function(name, i) {
+    div(
+      class = "row no-gap ginputs",
+      div(
+        class = "picker_container",
+        img(src = game$get_player(i)$get_avatar(), class = "avatar"),
+        picker(
+          inputId = paste0(name, if (bid_stage) "BR" else "PR"),
+          label = name,
+          choices = c("", 0, seq_len(game$num_cards())),
+          placeholder = if (bid_stage) "bids?" else ": how many tricks?"
+        )
+      )
+    )
   }
 
   tagList(
-    purrr::map(game$get_order(), gen_picker),
+    purrr::imap(game$get_order(), gen_picker),
     f7Row(
       id = "play_button",
       act_button(

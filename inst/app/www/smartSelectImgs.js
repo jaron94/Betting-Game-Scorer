@@ -6,6 +6,7 @@ $( document ).ready(function() {
       curr_av.src = arg.src;
     } else {
       var av = document.createElement("img");
+      av.className = "avatar";
       av.src = arg.src;
       button_content.appendChild(av);
     }    

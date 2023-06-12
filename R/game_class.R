@@ -22,9 +22,14 @@ Player <- R6::R6Class(
   private = list(
     bids = integer(),
     ntricks = integer(),
-    scores = integer()
+    scores = integer(),
+    avatar = character()
   ),
   public = list(
+    initialize = function(id, avatar) {
+      private$id <- id
+      private$avatar <- avatar
+    },
     print = function() {
       cat("Player:", private$id)
     },
@@ -41,6 +46,9 @@ Player <- R6::R6Class(
     },
     get_ntricks = function() {
       private$ntricks
+    },
+    get_avatar = function() {
+      private$avatar
     }
   )
 )
