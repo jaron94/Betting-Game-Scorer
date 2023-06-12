@@ -109,8 +109,6 @@ mob_startup_modal <- function() {
 
   num_players_opts <- seq(2, max_players)
 
-  pinput_style <- "margin-top: 0;"
-
   player_inputs <- c(
     list(f7Text("P1", NULL, placeholder = "Who deals first?")),
     purrr::map(
@@ -123,25 +121,22 @@ mob_startup_modal <- function() {
   f7Popup(
     id = "setup_popup",
     title = "Game Set-up",
-    # avatar_inputs,
-    f7Block(
+    div(
       f7BlockHeader("Start new game"),
       f7Select("num_players", "How many players?", choices = num_players_opts),
-      f7Flex(
-        f7Flex(player_inputs, id = "pinputs"),
-        f7Flex(avatar_inputs, id = "ainputs")
-      ) |> tagSetStyle("width: 100%; flex-wrap: wrap;"),
-      f7Row(
-        f7Button("set_up", "New Game")
+      div(id = "apinputs_div",
+        div(player_inputs, id = "pinputs", class = "apinputs"),
+        div(avatar_inputs, id = "ainputs", class = "apinputs")
       ),
-      hairlines = FALSE
-    ) |>
-      tagSetStyle("width: 100%;"),
-    f7Block(
-      f7BlockHeader("Load saved game"),
-      f7Select("saved_game_id", NULL, choices = saved_games),
-      f7Button("reload", "Load Game:"),
-      hairlines = FALSE
+      f7Button("set_up", "New Game"),
+      div(
+        f7Select("saved_game_id", NULL, choices = saved_games),
+        f7Button("reload", "Load Game"),
+        id = "load_game_div",
+        class = "list"
+      ),
+      id = "setup_div",
+      class = "block no-hairlines"
     )
   )
 }
