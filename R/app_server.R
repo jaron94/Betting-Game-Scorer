@@ -256,49 +256,31 @@ create_game_inputs <- function(game, bid_stage, mob) {
 
   num_players <- game$num_players()
 
-  input_height <- "var(--f7-input-height)"
-  list_margin <- "var(--f7-list-margin-vertical)"
-
-  row_min_height <- glue::glue("calc({input_height} + 2 * {list_margin})")
-  row_style <- glue::glue(
-    "margin: 0; width: 100%; align-items: center; ",
-    "min-height: {row_min_height}; ",
-    "height: calc(80% / {num_players})"
-  )
-  list_style <- "margin: 0; width: 60%"
-  bt_style <- glue::glue(
-    "margin-top: var(--f7-block-title-margin-bottom);",
-    "width: calc(40% - 2 * var(--f7-block-padding-horizontal))"
-  )
-
   gen_picker <- function(name) {
     f7Row(
+      tags$div(
       picker(
         inputId = paste0(name, if (bid_stage) "BR" else "PR"),
         label = name,
         choices = c("", 0, seq_len(game$num_cards())),
         placeholder = if (bid_stage) "bids?" else ": how many tricks?"
       ),
+      class = "picker_container"
+      ),
       gap = FALSE
-    )
+    ) |>
+      tagAppendAttributes(class = "ginputs")
   }
 
-  pickers <- htmltools::tagQuery(purrr::map(game$get_order(), gen_picker))$
-    addAttrs(style = row_style)$
-    find(".block-title")$addAttrs(style = bt_style)$
-    resetSelected()$
-    find(".list")$addAttrs(style = list_style)$
-    allTags()
-
   tagList(
-    pickers,
+    purrr::map(game$get_order(), gen_picker),
     f7Row(
+      id = "play_button",
       act_button(
         if (bid_stage) "bet" else "score",
         if (bid_stage) "Enter Bids" else "Enter Results"
       )
-    ) |>
-      tagSetHeight("20%")
+    )
   )
 }
 

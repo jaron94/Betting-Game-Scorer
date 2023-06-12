@@ -1,0 +1,33 @@
+#betting {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#betting .row.no-gap {
+    margin: 0;
+    width: 100%;
+    align-items: center;
+    min-height: calc(var(--f7-input-height) + 2 * var(--f7-list-margin-vertical));
+    flex: 1;
+}
+
+.picker_container {
+  display: flex;
+  flex-direction: row;
+}
+
+.ginputs .list {
+    margin: 0;
+    width: 60%
+} 
+
+.ginputs .block-title {
+    margin-top: var(--f7-block-title-margin-bottom);
+    width: calc(40% - 2 * var(--f7-block-padding-horizontal));
+}
+
+#play_button {
+    height: 20%;
+    align-items: flex-end;
+}
