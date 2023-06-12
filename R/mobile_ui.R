@@ -22,12 +22,12 @@ mobile_ui <- function(request) {
             active = TRUE,
             f7Block(
               f7BlockHeader(uiOutput("round_info", inline = TRUE)) |>
-                tagSetStyle("font-size: 20px"),
+                tagSetStyle("font-size: 20px; height: calc(10% - var(--f7-block-header-margin));"),
               hairlines = TRUE,
               strong = TRUE,
               inset = FALSE,
-              uiOutput("betting", style = "height: 85%;"),
-              shinyjs::hidden(uiOutput("playing", style = "height: 85%;"))
+              uiOutput("betting", class = "ginput_div"),
+              shinyjs::hidden(uiOutput("playing", class = "ginput_div"))
             ) |>
               tagSetHeight("calc(100% - 2 * var(--f7-block-margin-vertical))")
           ),
