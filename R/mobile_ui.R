@@ -91,7 +91,8 @@ gen_avatar_inputs <- function(num_players_opts) {
       input$find("option")$each(
         \(x, i) tagAppendAttributes(
           x,
-          `data-option-image` = avatar_imgs[i]
+          `data-option-image` = avatar_imgs[i],
+          `data-option-class` = "avatar-option"
         )
       )
       input$allTags()

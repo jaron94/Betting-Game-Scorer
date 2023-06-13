@@ -1,4 +1,4 @@
-.avatar {
+.avatar-option .item-media img, .avatar {
     height: calc(var(--f7-input-height) + var(--f7-list-item-padding-vertical));
     width: auto;
     padding-bottom: var(--f7-list-item-padding-vertical);
