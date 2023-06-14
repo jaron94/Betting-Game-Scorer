@@ -66,7 +66,13 @@ mobile_ui <- function(request) {
   )
 }
 
-# Container for bid/tricks inputs that ensures they fit in one screen
+#' Generate the avatar inputs
+#'
+#' @param num_players_opts The number of players
+#'
+#' @details Avatars can be generated at https://www.dicebear.com/playground
+#' @return A list of avatar inputs
+#' @noRd
 gen_avatar_inputs <- function(num_players_opts) {
 
   avatar_opts <- app_sys("app", "www", "icons") |>
@@ -139,25 +145,5 @@ mob_startup_modal <- function() {
       id = "setup_div",
       class = "block no-hairlines"
     )
-  )
-}
-
-f7TimelineItemDiv <- function(..., id) {
-  htmltools::tagAppendAttributes(
-    f7TimelineItem(...),
-    id = id,
-    .cssSelector = ".timeline-item-divider"
-  )
-}
-
-gen_timeline_items <- function(max_rounds = 13) {
-  purrr::map(
-    seq_len(max_rounds),
-    \(round) {
-      f7TimelineItemDiv(
-        paste("Round", round),
-        id = paste0("tl_item", round)
-      )
-    }
   )
 }
