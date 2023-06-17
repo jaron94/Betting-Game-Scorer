@@ -15,6 +15,7 @@
   flex-direction: column;
   justify-content: space-between;
   flex-wrap: wrap;
+  margin-bottom: var(--f7-list-margin-vertical);
 }
 
 .apinputs > * {
@@ -22,21 +23,31 @@
   margin: 0;
 }
 
+#setup_div > div:nth-child(1) .item-inner {
+  padding-right: 0;
+}
+
 #pinputs {
-  width: 70%;
+  flex: 2;
 }
 
 #ainputs {
-  width: 30%;
+  flex: 1;
 }
 
 #ainputs .item-content {
   padding-left: 0;
 }
 
+.popup.modal-in[style] {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .popup.modal-in > .block {
-  height: calc(100% - 2 * var(--f7-block-margin-vertical));
   width: 100%;
+  flex: 1;
 }
 
 #setup_div {
@@ -46,10 +57,15 @@
   justify-content: center;
 }
 
+#setup_div .list {
+  margin-top: 0;
+}
+
 #load_game_div {
   align-items: center;
   flex-wrap: wrap;
   flex-direction: column;
+  margin-bottom: var(--f7-list-margin-vertical);
 }
 
 #load_game_div .list {
