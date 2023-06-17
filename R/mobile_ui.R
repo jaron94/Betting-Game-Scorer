@@ -129,7 +129,6 @@ mob_startup_modal <- function() {
     id = "setup_popup",
     title = "Game Set-up",
     div(
-      f7BlockHeader("Start new game"),
       f7Select("num_players", "How many players?", choices = num_players_opts),
       div(id = "apinputs_div",
         div(player_inputs, id = "pinputs", class = "apinputs"),
