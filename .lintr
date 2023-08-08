@@ -10,5 +10,7 @@ encoding: "UTF-8"
 exclusions: list(
   "renv",
   "packrat",
-  "tests/testthat.R"
+  "tests/testthat.R",
+  "R/game_class.R" = list(object_name_linter = Inf),
+  "dev"
   )
