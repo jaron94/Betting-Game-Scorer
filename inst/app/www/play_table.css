@@ -1,0 +1,11 @@
+#play_table .gt_column_spanner {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 40px !important
+}
+
+#play_table .gt_column_spanner:hover {
+    overflow: visible;
+    white-space: normal;
+}
