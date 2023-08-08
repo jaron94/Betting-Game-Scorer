@@ -26,7 +26,7 @@ Player <- R6::R6Class(
     avatar = character()
   ),
   public = list(
-    initialize = function(id, avatar) {
+    initialize = function(id, avatar = NULL) {
       private$id <- id
       private$avatar <- avatar
     },
