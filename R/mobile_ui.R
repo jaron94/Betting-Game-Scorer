@@ -21,20 +21,18 @@ mobile_ui <- function(request) {
             tabName = "play",
             active = TRUE,
             f7Block(
-              f7BlockHeader(uiOutput("round_info", inline = TRUE)) |>
-                tagSetStyle("font-size: 20px; height: calc(10% - var(--f7-block-header-margin));"),
-              hairlines = TRUE,
-              strong = TRUE,
-              inset = FALSE,
+              id = "play_div",
+              f7BlockHeader(uiOutput("round_info", inline = TRUE)),
               uiOutput("betting", class = "ginput_div"),
-              shinyjs::hidden(uiOutput("playing", class = "ginput_div"))
-            ) |>
-              tagSetHeight("calc(100% - 2 * var(--f7-block-margin-vertical))")
+              shinyjs::hidden(uiOutput("playing", class = "ginput_div")),
+              hairlines = FALSE,
+              strong = TRUE
+            )
           ),
           f7Tab(
             title = "Scores",
             tabName = "scores",
-            f7Card(
+            f7Block(
               gt::gt_output("play_table")
             )
           ),
