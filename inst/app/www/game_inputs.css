@@ -1,29 +1,42 @@
 #play_div {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   min-height: 100%;
-  margin: 0;
+  margin: auto;
+  flex-wrap: wrap;
+  flex: 1;
 }
 
 #play_div .block-header {
   font-size: 18px;
-  flex: 1;
+  text-align: center;
+  width: 100%;
+}
+
+#picker_div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  width: 100%;
+  flex: 5;
 }
 
 .ginput_div {
-    display: flex;
-    flex: 9;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100%;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  width: 100%;
 }
 
-.ginput_div .row.no-gap {
-    margin: 0;
-    width: 100%;
-    align-items: center;
-    flex: 1;
+.ginputs {
+  width: 50%;
+  flex: none;
+  margin: 0;
+  align-items: center;
+  align-content: space-around;
 }
 
 .picker_container {
@@ -33,13 +46,13 @@
   width: 100%;
 }
 
-.picker_container > * {
+.picker_container>* {
   flex: 1;
 }
 
 .ginputs .list {
   margin: 0;
-  flex-grow: 3;
+  flex-grow: 2;
 }
 
 .ginputs .block-title {
@@ -47,39 +60,35 @@
 }
 
 #play_button {
-    flex: 2;
-    align-items: flex-end;
+  width: 100%;
+  justify-content: center;
+  align-items: flex-end;
+  flex: none;
+
+  .button {
+    width: 50%;
+  }
 }
 
-:root {
-  --f7-tabbar-labels-height: 40px;
-  --f7-toolbar-height: 40px;
-}
-
-/*/ when in landscape mode, use a two-column layout for the game inputs /*/
-@media screen and (orientation: landscape) {
-  #play_div {
-    display: block;
-    width: 100%;
-  }
-
-  #play_div .block-header {
-    width: 100%;
-    text-align: center;
-  }
-
+@media screen and (orientation: portrait) and (max-width: 480px) {
   .ginput_div {
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-direction: column;
   }
 
-  .row.no-gap.ginputs {
-    max-width: 50% !important;
-    flex: none;
+  .ginputs {
+    width: 100%;
+    flex: 5;
   }
 
   #play_button {
+    flex: 1;
+  }
+
+  #play_div .block-header {
     flex: none;
-    width: 100%;
+  }
+
+  #picker_div {
+    flex-direction: column;
   }
 }
