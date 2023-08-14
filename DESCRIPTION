@@ -30,6 +30,7 @@ Imports:
     utils
 Suggests: 
     charpente (>= 0.5.0),
+    chromote (>= 0.1.2.9000),
     covr,
     lintr,
     rvest,
@@ -46,5 +47,6 @@ Language: en-US
 LazyData: true
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
-Remotes: 
-    RinteRface/charpente
+Remotes:  
+    RinteRface/charpente,
+    rstudio/chromote
