@@ -4,42 +4,73 @@
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @noRd
-mobile_ui <- function(request) {
+app_ui <- function(request) {
+  mobile <- getOption("bgScorer.mobile", TRUE)
+
+  inputs_block <- div(
+    class = "main_div",
+    f7Block(
+      id = "play_div",
+      f7BlockHeader(uiOutput("round_info", inline = TRUE)),
+      uiOutput("betting", class = "ginput_div"),
+      shinyjs::hidden(uiOutput("playing", class = "ginput_div")),
+      hairlines = FALSE,
+      strong = TRUE
+    )
+  )
+
+  play_table_block <- div(
+    class = "main_div",
+    f7Block(
+      gt::gt_output("play_table")
+    )
+  )
+
+  inputs_tab <- f7Tab(
+    title = "Play",
+    tabName = "play",
+    active = TRUE,
+    inputs_block
+  )
+
+  play_table_tab <- f7Tab(
+    tabName = "scores",
+    title = "Scores",
+    play_table_block
+  )
+
+  navbar <- f7Navbar(
+    title = "The Betting Game",
+    hairline = FALSE,
+    shadow = TRUE
+  )
+
+  main_layout <- if (mobile) {
+    f7TabLayout(
+      navbar = navbar,
+      f7Tabs(
+        inputs_tab,
+        play_table_tab,
+        animated = FALSE,
+        swipeable = TRUE
+      )
+    )
+  } else {
+    f7SingleLayout(
+      navbar = navbar,
+      div(
+        class = "main_div",
+        inputs_block,
+        play_table_block
+      )
+    )
+  }
+
   tagList(
     golem_add_external_resources(),
     f7Page(
       title = "Betting Game Scorer",
-      f7TabLayout(
-        navbar = f7Navbar(
-          title = "The Betting Game",
-          hairline = FALSE,
-          shadow = TRUE
-        ),
-        f7Tabs(
-          f7Tab(
-            title = "Play",
-            tabName = "play",
-            active = TRUE,
-            f7Block(
-              id = "play_div",
-              f7BlockHeader(uiOutput("round_info", inline = TRUE)),
-              uiOutput("betting", class = "ginput_div"),
-              shinyjs::hidden(uiOutput("playing", class = "ginput_div")),
-              hairlines = FALSE,
-              strong = TRUE
-            )
-          ),
-          f7Tab(
-            title = "Scores",
-            tabName = "scores",
-            f7Block(
-              gt::gt_output("play_table")
-            )
-          ),
-          animated = FALSE,
-          swipeable = TRUE
-        )
-      ),
+      main_layout,
       options = list(
         theme = "auto",
         dark = FALSE,
@@ -72,7 +103,6 @@ mobile_ui <- function(request) {
 #' @return A list of avatar inputs
 #' @noRd
 gen_avatar_inputs <- function(num_players_opts) {
-
   avatar_opts <- app_sys("app", "www", "icons") |>
     list.files(pattern = "\\.svg$")
 
@@ -128,7 +158,8 @@ mob_startup_modal <- function() {
     title = "Game Set-up",
     div(
       f7Select("num_players", "How many players?", choices = num_players_opts),
-      div(id = "apinputs_div",
+      div(
+        id = "apinputs_div",
         div(player_inputs, id = "pinputs", class = "apinputs"),
         div(avatar_inputs, id = "ainputs", class = "apinputs")
       ),

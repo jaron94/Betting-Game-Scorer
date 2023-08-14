@@ -1,36 +1,3 @@
-#' The application User-Interface
-#'
-#' @param request Internal parameter for `{shiny}`.
-#'     DO NOT REMOVE.
-#' @import shiny
-#' @noRd
-app_ui <- function(request) {
-  tagList(
-    # Leave this function for adding external resources
-    golem_add_external_resources(),
-    # Your application UI logic
-    fluidPage(
-      theme = shinythemes::shinytheme("readable"),
-      titlePanel("Betting Game Scorer"),
-      sidebarLayout(
-        sidebarPanel(
-          width = 2,
-          h4(uiOutput("round_info")),
-          uiOutput("betting"),
-          shinyjs::hidden(uiOutput("playing")),
-          actionButton("save_game", "Save game")
-        ),
-        mainPanel(
-          fluidRow(column(10,
-            align = "center",
-            gt::gt_output("play_table")
-          ))
-        )
-      )
-    )
-  )
-}
-
 #' Add external Resources to the Application
 #'
 #' This function is internally used to add external
