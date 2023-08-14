@@ -1,3 +1,7 @@
+#play_table {
+    width: 100%;
+}
+
 #play_table .gt_column_spanner {
     white-space: nowrap;
     overflow: hidden;
