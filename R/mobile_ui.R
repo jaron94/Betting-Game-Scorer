@@ -114,7 +114,7 @@ gen_avatar_inputs <- function(num_players_opts) {
       input <- f7SmartSelect(
         paste0("A", x),
         "",
-        choices = setNames(avatar_imgs, rep(" ", length(avatar_imgs))),
+        choices = stats::setNames(avatar_imgs, rep(" ", length(avatar_imgs))),
         openIn = "popover",
         closeOnSelect = TRUE,
         selected = avatar_imgs[x],

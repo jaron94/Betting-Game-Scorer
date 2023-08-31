@@ -43,17 +43,17 @@
   self$output_table() |>
     dplyr::rename_with(
       \(name) stringr::str_replace_all(name, cols_abbrev),
-      .cols = starts_with(player_names)
+      .cols = dplyr::starts_with(player_names)
     ) |>
     gt::gt(id = "play_table") |>
-    gt::tab_spanner_delim("_", starts_with(player_names)) |>
+    gt::tab_spanner_delim("_", gt::starts_with(player_names)) |>
     gt::cols_align(align = "center") |>
     gt::fmt_passthrough(Suit, escape = FALSE) |>
     gt::cols_width(-c(Round, Cards, Suit) ~ px(30)) |>
     gt::sub_missing(missing_text = "") |>
     gt::tab_style(
       style = gt::cell_text(whitespace = "pre-line"),
-      locations = gt::cells_body(starts_with(player_names))
+      locations = gt::cells_body(gt::starts_with(player_names))
     )
 }
 

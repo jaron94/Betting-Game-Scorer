@@ -1,7 +1,6 @@
 utils::globalVariables(
   c(
-    "Round", "Table", "Final Score", "player", "temp", "TEMP", "Stage",
-    "Player"
+    "Round", "Table", "Final Score", "player", "Stage", "Player", "Suit"
   )
 )
 
