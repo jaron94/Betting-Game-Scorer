@@ -8,6 +8,7 @@ $run_dev.*
 ^\.pre-commit-config\.yaml$
 ^\.rscignore$
 ^app\.R$
+^app_mobile\.R$
 ^codecov\.yml$
 ^data-raw$
 ^dev$
