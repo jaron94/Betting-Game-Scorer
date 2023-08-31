@@ -243,7 +243,7 @@ app_server <- function(input, output, session) {
 
 
 create_game_inputs <- function(game, bid_stage) {
-  picker <- f7Picker
+  picker <- f7Stepper
   act_button <- f7Button
 
   num_players <- game$num_players()
@@ -257,8 +257,10 @@ create_game_inputs <- function(game, bid_stage) {
         picker(
           inputId = paste0(name, if (bid_stage) "BR" else "PR"),
           label = name,
-          choices = c("", 0, seq_len(game$num_cards())),
-          placeholder = if (bid_stage) "bids?" else ": how many tricks?"
+          min = 0,
+          max = game$num_cards(),
+          value = 0,
+          manual = TRUE
         )
       )
     )
