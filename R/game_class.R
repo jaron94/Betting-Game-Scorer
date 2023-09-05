@@ -86,13 +86,17 @@ Game <- R6::R6Class( # nolint cyclocomp_linter
         cat("Bids:", purrr::map(
           private$players,
           \(x) x$get_bids()
-        ) |> unlist() |> toString(), "\n")
+        ) |>
+          unlist() |>
+          toString(), "\n")
       }
       if (private$round >= 1) {
         cat("Scores:", purrr::map(
           private$players,
           \(x) x$get_ntricks()
-        ) |> unlist() |> toString(), "\n")
+        ) |>
+          unlist() |>
+          toString(), "\n")
       }
     },
     add_player = function(player) {
