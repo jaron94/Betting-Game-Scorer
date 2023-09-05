@@ -12,6 +12,11 @@ app_ui <- function(request) {
     f7Block(
       id = "play_div",
       f7BlockHeader(uiOutput("round_info", inline = TRUE)),
+      f7Button(
+        "save_game",
+        f7Icon("floppy_disk"),
+        fill = FALSE
+      ),
       uiOutput("betting", class = "ginput_div"),
       shinyjs::hidden(uiOutput("playing", class = "ginput_div")),
       hairlines = FALSE,
