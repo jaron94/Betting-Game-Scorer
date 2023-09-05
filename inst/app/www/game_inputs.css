@@ -70,6 +70,15 @@
   }
 }
 
+#save_game {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: fit-content;
+  height: fit-content;
+  padding: 10px;
+}
+
 @media screen and (orientation: portrait) and (max-width: 480px) {
   .ginput_div {
     flex-direction: column;
