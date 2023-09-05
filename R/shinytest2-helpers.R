@@ -70,7 +70,6 @@ sim_bids <- function(app, players, valid = TRUE) {
   app$set_inputs(!!!bids, allow_no_input_binding_ = TRUE)
 
   app$click(selector = "#bet")
-  
   app$wait_for_idle()
 
   if (valid) {
@@ -122,7 +121,6 @@ sim_tricks <- function(app, players, valid = TRUE) {
   app$set_inputs(!!!tricks, allow_no_input_binding_ = TRUE)
 
   app$click(selector = "#score")
-  
   app$wait_for_idle()
 
   if (valid) {
