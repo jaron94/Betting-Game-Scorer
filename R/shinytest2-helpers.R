@@ -30,7 +30,7 @@ start_app <- function(
 setup_game <- function(app, players) {
   app$set_inputs(num_players = length(players))
   app$set_inputs(!!!players, allow_no_input_binding_ = TRUE)
-  app$click("set_up")
+  app$click(selector = "#set_up")
   app$wait_for_value(
     input = paste0(players[1], "BR"),
     ignore = list(NULL)
@@ -69,7 +69,9 @@ sim_bids <- function(app, players, valid = TRUE) {
 
   app$set_inputs(!!!bids, allow_no_input_binding_ = TRUE)
 
-  app$click("bet")
+  app$click(selector = "#bet")
+  
+  app$wait_for_idle()
 
   if (valid) {
     app$wait_for_value(
@@ -119,10 +121,11 @@ sim_tricks <- function(app, players, valid = TRUE) {
 
   app$set_inputs(!!!tricks, allow_no_input_binding_ = TRUE)
 
-  app$click("score")
+  app$click(selector = "#score")
+  
+  app$wait_for_idle()
 
   if (valid) {
-    app$wait_for_idle()
 
     loss_indicator <- app$get_html(
       paste(
@@ -151,18 +154,18 @@ test_reload <- function(name, players) {
   setup_game(app, players)
   sim_bids(app, players)
   game <- app$get_value(export = "game")
-  app$click("save_game")
+  app$click(selector = "#save_game")
 
   app2 <- start_app()
-  app2$click("reload")
+  app2$click(selector = "#reload")
   loaded_game <- app2$get_value(export = "game")
   testthat::expect_identical(game, loaded_game)
   sim_tricks(app2, players)
   game2 <- app2$get_value(export = "game")
-  app2$click("save_game")
+  app2$click(selector = "#save_game")
 
   app3 <- start_app()
-  app3$click("reload")
+  app3$click(selector = "#reload")
   loaded_game2 <- app3$get_value(export = "game")
   testthat::expect_identical(game2, loaded_game2)
 }
