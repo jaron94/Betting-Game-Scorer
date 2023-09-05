@@ -38,8 +38,8 @@ setup_game <- function(app, players) {
   testthat::expect_identical(
     app$get_values(input = paste0(players, "BR")) |>
       purrr::flatten() |>
-      purrr::flatten_chr(),
-    rep("", length(players))
+      as.integer(),
+    rep(0L, length(players))
   )
 }
 
@@ -82,8 +82,8 @@ sim_bids <- function(app, players, valid = TRUE) {
     testthat::expect_identical(
       app$get_values(input = paste0(players, "PR")) |>
         purrr::flatten() |>
-        purrr::flatten_chr(),
-      rep("", length(players))
+        as.integer(),
+      rep(0L, length(players))
     )
   } else {
     testthat::expect_identical(app$get_text(sweet_alert_title), "Error")
