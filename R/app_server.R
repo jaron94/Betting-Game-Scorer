@@ -254,7 +254,7 @@ gen_picker <- function(game, bid_stage, name) {
         label = name,
         min = 0,
         max = game$num_cards(),
-        value = if (bid_stage) 0 else tail(player$get_bids(), 1),
+        value = if (bid_stage) 0 else utils::tail(player$get_bids(), 1),
         manual = TRUE
       )
     )
