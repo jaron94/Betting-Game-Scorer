@@ -241,38 +241,38 @@ app_server <- function(input, output, session) {
 }
 
 
+gen_picker <- function(game, bid_stage, name) {
+  player <- game$get_player_by_id(name)
+
+  div(
+    class = "row no-gap ginputs",
+    div(
+      class = "picker_container",
+      img(src = player$get_avatar(), class = "avatar"),
+      f7Stepper(
+        inputId = paste0(name, if (bid_stage) "BR" else "PR"),
+        label = name,
+        min = 0,
+        max = game$num_cards(),
+        value = if (bid_stage) 0 else tail(player$get_bids(), 1),
+        manual = TRUE
+      )
+    )
+  )
+}
+
+
 create_game_inputs <- function(game, bid_stage) {
-  picker <- f7Stepper
   act_button <- f7Button
 
   num_players <- game$num_players()
-
-  gen_picker <- function(name) {
-    player <- game$get_player_by_id(name)
-
-    div(
-      class = "row no-gap ginputs",
-      div(
-        class = "picker_container",
-        img(src = player$get_avatar(), class = "avatar"),
-        picker(
-          inputId = paste0(name, if (bid_stage) "BR" else "PR"),
-          label = name,
-          min = 0,
-          max = game$num_cards(),
-          value = if (bid_stage) 0 else tail(player$get_bids(), 1),
-          manual = TRUE
-        )
-      )
-    )
-  }
 
   tagList(
     div(
       id = "picker_div",
       purrr::map(
         game$get_order(),
-        \(name) gen_picker(name = name)
+        \(name) gen_picker(game = game, bid_stage = bid_stage, name = name)
       )
     ),
     f7Row(
