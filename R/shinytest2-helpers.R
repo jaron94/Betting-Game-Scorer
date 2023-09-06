@@ -65,6 +65,7 @@ sim_bids <- function(app, players, valid = TRUE) {
     bids <- c(bids, tot_tricks - sum(bids))
   }
 
+  bids <- as.integer(bids)
   names(bids) <- bid_ids
 
   app$set_inputs(!!!bids, allow_no_input_binding_ = TRUE)
@@ -80,11 +81,19 @@ sim_bids <- function(app, players, valid = TRUE) {
 
     testthat::expect_null(app$get_html(sweet_alert_button))
 
+    pr_input_ids <- paste0(players, "PR")
+
+    app_pr_inputs <- app$get_values(input = pr_input_ids) |>
+      purrr::flatten() |>
+      unlist(use.names = TRUE) |>
+      _[pr_input_ids]
+
+    exp_pr_inputs <- bids |>
+      purrr::set_names(\(x) sub("BR", "PR", x, fixed = TRUE))
+
     testthat::expect_identical(
-      app$get_values(input = paste0(players, "PR")) |>
-        purrr::flatten() |>
-        as.integer(),
-      rep(0L, length(players))
+      app_pr_inputs,
+      exp_pr_inputs
     )
   } else {
     testthat::expect_identical(app$get_text(sweet_alert_title), "Error")
