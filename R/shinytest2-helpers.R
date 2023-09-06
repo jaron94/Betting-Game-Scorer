@@ -101,6 +101,7 @@ sim_bids <- function(app, players, valid = TRUE) {
     testthat::expect_identical(app$get_text(sweet_alert_button), "Ok")
 
     app$click(selector = sweet_alert_button)
+    app$wait_for_idle()
   }
 }
 
@@ -154,6 +155,7 @@ sim_tricks <- function(app, players, valid = TRUE) {
     testthat::expect_identical(app$get_text(sweet_alert_button), "Ok")
 
     app$click(selector = sweet_alert_button)
+    app$wait_for_idle()
   }
 }
 
