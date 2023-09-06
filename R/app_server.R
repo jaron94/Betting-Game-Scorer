@@ -247,12 +247,14 @@ create_game_inputs <- function(game, bid_stage) {
 
   num_players <- game$num_players()
 
-  gen_picker <- function(name, i) {
+  gen_picker <- function(name) {
+    player <- game$get_player_by_id(name)
+
     div(
       class = "row no-gap ginputs",
       div(
         class = "picker_container",
-        img(src = game$get_player(i)$get_avatar(), class = "avatar"),
+        img(src = player$get_avatar(), class = "avatar"),
         picker(
           inputId = paste0(name, if (bid_stage) "BR" else "PR"),
           label = name,
@@ -268,7 +270,10 @@ create_game_inputs <- function(game, bid_stage) {
   tagList(
     div(
       id = "picker_div",
-      purrr::imap(game$get_order(), gen_picker)
+      purrr::map(
+        game$get_order(),
+        \(name) gen_picker(name = name)
+      )
     ),
     f7Row(
       id = "play_button",
