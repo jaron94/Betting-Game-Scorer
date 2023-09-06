@@ -85,8 +85,9 @@ sim_bids <- function(app, players, valid = TRUE) {
 
     app_pr_inputs <- app$get_values(input = pr_input_ids) |>
       purrr::flatten() |>
-      unlist(use.names = TRUE) |>
-      _[pr_input_ids]
+      unlist(use.names = TRUE)
+
+    app_pr_inputs <- app_pr_inputs[pr_input_ids]
 
     exp_pr_inputs <- bids |>
       purrr::set_names(\(x) sub("BR", "PR", x, fixed = TRUE))
