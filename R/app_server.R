@@ -260,7 +260,7 @@ create_game_inputs <- function(game, bid_stage) {
           label = name,
           min = 0,
           max = game$num_cards(),
-          value = 0,
+          value = if (bid_stage) 0 else tail(player$get_bids(), 1),
           manual = TRUE
         )
       )
