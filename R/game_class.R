@@ -74,6 +74,9 @@ Game <- R6::R6Class( # nolint cyclocomp_linter
     get_player = function(pos) {
       private$players[[pos]]
     },
+    get_player_by_id = function(name) {
+      self$get_player(which(self$get_player_names() == name))
+    },
     print = function() {
       cat("Game:", private$id, "\n")
       if (self$num_players() > 0) {
