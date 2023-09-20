@@ -214,13 +214,9 @@ Game <- R6::R6Class( # nolint cyclocomp_linter
       } else {
         readRDS(file)
       }
-      private$round <- loaded$get_round()
-      private$players <- purrr::map(
-        seq_len(loaded$num_players()),
-        \(pos) loaded$get_player(pos)$clone(deep = TRUE)
-      )
-      private$bid_stage <- loaded$get_bid_stage()
-      private$order <- loaded$get_order()
+      self <- loaded
+      lockEnvironment(self)
+      invisible(self)
     }
   )
 )
