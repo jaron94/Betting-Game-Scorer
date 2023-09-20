@@ -52,6 +52,7 @@ jobs:
                                             "NAMESPACE",
                                             "R",
                                             "inst",
-                                            ".Renviron"))
+                                            ".Renviron"),
+                               forceUpdate = TRUE)
         shell: Rscript {0}
         
