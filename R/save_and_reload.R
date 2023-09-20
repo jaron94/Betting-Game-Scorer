@@ -1,6 +1,7 @@
 #' Authenticate bgScorer to GCS
 #'
 #' @param file_name Name of file containing Service Account key
+#' @param use_gcs Whether to use GCS. Default is the "use_gcs" config value
 #'
 #' @return Function to be called when starting the app
 #' @export
