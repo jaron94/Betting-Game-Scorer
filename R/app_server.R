@@ -101,7 +101,11 @@ app_server <- function(input, output, session) {
   observeEvent(input$reload, {
     game_id <- input$saved_game_id
     req(game_id)
-    assign("game", game$load(game_id, saved_game_dir), envir = .GlobalEnv)
+    assign(
+      "game",
+      game$load(game_id, saved_game_dir)$clone(deep = TRUE),
+      inherits = TRUE
+    )
     trigger("update_game")
     remove_modal()
   })
