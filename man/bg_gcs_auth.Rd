@@ -4,10 +4,15 @@
 \alias{bg_gcs_auth}
 \title{Authenticate bgScorer to GCS}
 \usage{
-bg_gcs_auth(file_name = "bgScorer-testing.json")
+bg_gcs_auth(
+  file_name = "bgScorer-testing.json",
+  use_gcs = get_golem_config("use_gcs")
+)
 }
 \arguments{
 \item{file_name}{Name of file containing Service Account key}
+
+\item{use_gcs}{Whether to use GCS. Default is the "use_gcs" config value}
 }
 \value{
 Function to be called when starting the app
