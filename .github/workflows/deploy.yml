@@ -46,7 +46,8 @@ jobs:
           rsconnect::setAccountInfo("${{ secrets.RSCONNECT_USER }}",
                                     "${{ secrets.RSCONNECT_TOKEN }}",
                                     "${{ secrets.RSCONNECT_SECRET }}")
-          rsconnect::deployApp(appFiles = c("app_mobile.R",
+          rsconnect::deployApp(appPrimaryDoc = "app_mobile.R",
+                               appFiles = c("app_mobile.R",
                                             "DESCRIPTION",
                                             "NAMESPACE",
                                             "R",
