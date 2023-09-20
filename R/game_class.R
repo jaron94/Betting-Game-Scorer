@@ -27,7 +27,7 @@ Player <- R6::R6Class(
   ),
   public = list(
     initialize = function(id, avatar = NULL) {
-      private$id <- id
+      super$initialize(id)
       private$avatar <- avatar
     },
     print = function() {
@@ -58,6 +58,8 @@ Game <- R6::R6Class( # nolint cyclocomp_linter
   "Game",
   inherit = Base,
   private = list(
+    created_at = as.POSIXct(character()),
+    last_saved_at = as.POSIXct(character()),
     players = list(),
     round = 0,
     bid_stage = TRUE,
@@ -66,6 +68,10 @@ Game <- R6::R6Class( # nolint cyclocomp_linter
     trump_order = c("&spades;", "&hearts;", "&diams;", "&clubs;", "")
   ),
   public = list(
+    initialize = function(id) {
+      super$initialize(id)
+      private$created_at <- private$last_saved_at <- Sys.time()
+    },
     get_player_names = function() {
       if (!is.null(private$players)) {
         purrr::map_chr(private$players, \(x) x$get_id())
@@ -79,6 +85,8 @@ Game <- R6::R6Class( # nolint cyclocomp_linter
     },
     print = function() {
       cat("Game:", private$id, "\n")
+      cat("Created at:", private$created_at, "\n")
+      cat("Last saved at:", private$last_saved_at, "\n")
       if (self$num_players() > 0) {
         cat("Players:", toString(self$get_player_names()), "\n")
       }
@@ -197,6 +205,8 @@ Game <- R6::R6Class( # nolint cyclocomp_linter
       if (!dir.exists(dirname(file))) {
         dir.create(dirname(file), recursive = TRUE)
       }
+
+      private$last_saved_at <- Sys.time()
 
       saveRDS(self, file)
 
