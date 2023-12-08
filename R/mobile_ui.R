@@ -74,6 +74,7 @@ app_ui <- function(request) {
   tagList(
     golem_add_external_resources(),
     f7Page(
+      allowPWA = TRUE,
       title = "Betting Game Scorer",
       main_layout,
       options = list(
