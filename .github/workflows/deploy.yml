@@ -45,16 +45,13 @@ jobs:
           rsconnect::setAccountInfo("${{ secrets.RSCONNECT_USER }}",
                                     "${{ secrets.RSCONNECT_TOKEN }}",
                                     "${{ secrets.RSCONNECT_SECRET }}")
+                                    
           rsconnect::deployApp(
             appName = "Betting-Game-Scorer",
-            appPrimaryDoc = "app_mobile.R",
-            appFiles = c("app_mobile.R",
-                         "DESCRIPTION",
-                         "NAMESPACE",
-                         "R",
-                         "inst",
-                         ".Renviron"),
+            appDir = "inst/app",
+            appFiles = c("app.R", "www", ".Renviron"),
             forceUpdate = TRUE
           )
+          
         shell: Rscript {0}
         
