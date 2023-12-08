@@ -1,7 +1,7 @@
 {
   "name": "Betting-Game-Scorer",
   "short_name": "bgScorer",
-  "description": "What it does!",
+  "description": "Keep score in the Betting Game (AKA Contract Whist)",
   "lang": "en-US",
   "start_url": "/Betting-Game-Scorer",
   "display": "standalone",
