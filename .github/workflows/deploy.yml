@@ -37,11 +37,15 @@ jobs:
             "GCS_DEFAULT_BUCKET"
           )
           renviron <- Sys.getenv(env_vars, names = TRUE)
-          writeLines(paste0(names(renviron), "=", renviron), ".Renviron")
+          writeLines(paste0(names(renviron), "=", renviron),
+                     "inst/app/.Renviron")
         shell: Rscript {0}
 
       - name: Authorize and deploy app
         run: |
+          # (re)install from Github remote
+          pak::pkg_install("jaron94/bgScorer")
+          
           rsconnect::setAccountInfo("${{ secrets.RSCONNECT_USER }}",
                                     "${{ secrets.RSCONNECT_TOKEN }}",
                                     "${{ secrets.RSCONNECT_SECRET }}")
