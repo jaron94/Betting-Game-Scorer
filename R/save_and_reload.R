@@ -10,8 +10,11 @@ bg_gcs_auth <- function(
   use_gcs = get_golem_config("use_gcs")
 ) {
   if (use_gcs) {
-    json <- gargle:::secret_read("bgScorer", file_name) # nolint operator_usage_linter
-    googleCloudStorageR::gcs_auth(rawToChar(json))
+    json <- gargle::secret_decrypt_json(
+      system.file("secret", "bgScorer-testing.json", package = "bgScorer"),
+      key = "BGSCORER_PASSWORD"
+    )
+    googleCloudStorageR::gcs_auth(json)
     default_bucket <- Sys.getenv("GCS_DEFAULT_BUCKET")
     googleCloudStorageR::gcs_global_bucket(default_bucket)
   }

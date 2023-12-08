@@ -17,10 +17,10 @@
 ## Amend DESCRIPTION with dependencies read from package code parsing
 attachment::att_amend_desc(extra.suggests = c("covr", "pkgload"))
 
-gargle:::secret_write(
-  package = "bgScorer",
-  name = "bgScorer-testing.json",
-  input = "path-to-key.json"
+gargle::secret_encrypt_json(
+  key = "BGSCORER_PASSWORD",
+  path = devtools::package_file("inst", "secret", "bgScorer-testing.json"),
+  json = "path-to-json.json"
 )
 
 ## Add modules ----
