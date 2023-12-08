@@ -29,7 +29,6 @@ jobs:
         with:
           extra-packages: local::.
           needs: deploy
-          pak-version: devel
           
       - name: Configure gs4_auth
         run: |
