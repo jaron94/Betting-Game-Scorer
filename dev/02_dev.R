@@ -24,10 +24,11 @@ gargle::secret_encrypt_json(
 )
 
 charpente::set_pwa(
+  "inst/app",
   name = "Betting-Game-Scorer",
   shortName = "bgScorer",
   description = "Keep score in the Betting Game (AKA Contract Whist)",
-  start_url = "/Betting-Game-Scorer",
+  startUrl = "/Betting-Game-Scorer",
   # Because using framework7
   register_service_worker = FALSE
 )
