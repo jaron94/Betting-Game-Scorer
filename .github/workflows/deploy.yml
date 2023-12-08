@@ -36,7 +36,8 @@ jobs:
             "BGSCORER_PASSWORD",
             "GCS_DEFAULT_BUCKET"
           )
-          renviron <- Sys.getenv(env_vars, names = TRUE)
+          renviron <- Sys.getenv(env_vars, names = TRUE) |>
+            c("R_CONFIG_ACTIVE" = "production")
           writeLines(paste0(names(renviron), "=", renviron),
                      "inst/app/.Renviron")
         shell: Rscript {0}
