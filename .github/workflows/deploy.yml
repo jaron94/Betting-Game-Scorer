@@ -44,7 +44,7 @@ jobs:
       - name: Authorize and deploy app
         run: |
           # (re)install from Github remote
-          pak::pkg_install("jaron94/bgScorer")
+          pak::pkg_install("jaron94/Betting-Game-Scorer")
           
           rsconnect::setAccountInfo("${{ secrets.RSCONNECT_USER }}",
                                     "${{ secrets.RSCONNECT_TOKEN }}",
