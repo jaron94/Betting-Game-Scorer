@@ -8,6 +8,8 @@ Description: Shiny application to keep score in the Betting Game (AKA
 License: MIT + file LICENSE
 URL: https://github.com/jaron94/Betting-Game-Scorer
 BugReports: https://github.com/jaron94/Betting-Game-Scorer/issues
+GithubUsername: jaron94
+GithubRepo: Betting-Game-Scorer
 Imports: 
     config (>= 0.3.1),
     dplyr,
