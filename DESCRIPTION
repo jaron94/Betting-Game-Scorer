@@ -12,6 +12,7 @@ GithubUsername: jaron94
 GithubRepo: Betting-Game-Scorer
 Imports: 
     config (>= 0.3.1),
+    cookies,
     dplyr,
     gargle,
     gargoyle,
