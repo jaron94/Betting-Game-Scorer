@@ -47,12 +47,25 @@ app_ui <- function(request) {
   navbar <- f7Navbar(
     title = "The Betting Game",
     hairline = FALSE,
-    shadow = TRUE
+    shadow = TRUE,
+    rightPanel = TRUE
+  )
+
+  panels <- tagList(
+    f7Panel(id = "left_panel", side = "left"),
+    f7Panel(
+      id = "right_panel",
+      title = "Settings",
+      side = "right",
+      theme = "light",
+      settings_div()
+    )
   )
 
   main_layout <- if (mobile) {
     f7TabLayout(
       navbar = navbar,
+      panels = panels,
       f7Tabs(
         inputs_tab,
         play_table_tab,
@@ -63,6 +76,7 @@ app_ui <- function(request) {
   } else {
     f7SingleLayout(
       navbar = navbar,
+      panels = panels,
       div(
         class = "main_div",
         inputs_block,
@@ -142,6 +156,21 @@ gen_avatar_inputs <- function(num_players_opts) {
   )
 
   avatar_inputs
+}
+
+settings_div <- function() {
+  div(
+    f7Toggle(
+      "autosave",
+      "Enable autosave"
+    ),
+    f7Button(
+      "save_settings",
+      "Save settings"
+    ) |>
+      tagSetStyle("margin-top: 20px"),
+    class = "block no-hairlines"
+  )
 }
 
 # Function to create the modal dialog on startup to set up the game
