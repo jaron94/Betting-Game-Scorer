@@ -110,6 +110,27 @@ app_server <- function(input, output, session) {
     remove_modal()
   })
 
+  # Set cookie for autosave input
+  observeEvent(
+    input$save_settings,
+    {
+      cookies::set_cookie(
+        cookie_name = "autosave_setting",
+        cookie_value = input$autosave
+      )
+    }
+  )
+
+  observeEvent(
+    cookies::get_cookie("autosave_setting"),
+    {
+      updateF7Toggle(
+        inputId = "autosave",
+        checked = if (cookies::get_cookie("autosave_setting") == "true") TRUE
+      )
+    }
+  )
+
   observeEvent(input$bet, {
     bids <- purrr::map_int(
       game$get_player_names(),
@@ -173,6 +194,11 @@ app_server <- function(input, output, session) {
       showModal(end_modal())
 
       return()
+    }
+
+    # autosave
+    if (input$autosave) {
+      game$save(saved_game_dir)
     }
 
     tracked_losses <- game$loss_tracker()
