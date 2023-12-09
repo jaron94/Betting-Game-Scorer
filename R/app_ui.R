@@ -22,6 +22,7 @@ golem_add_external_resources <- function() {
       path = app_sys("app", "www"),
       app_title = "bgScorer"
     ),
+    cookies::cookie_dependency(),
     shinyjs::useShinyjs(),
     tags$style(HTML("
       .form-group, {
