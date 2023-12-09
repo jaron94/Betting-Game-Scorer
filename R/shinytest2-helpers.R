@@ -117,14 +117,14 @@ sim_tricks <- function(app, players, valid = TRUE) {
 
   trick_ids <- paste0(players, "PR")
 
-  if (!valid) {
+  if (valid) {
+    tricks <- rep(floor(tot_tricks / n_players), n_players - 1)
+    tricks <- c(tricks, tot_tricks - sum(tricks))
+  } else {
     tricks <- sample(seq(0, tot_tricks), n_players)
     if (sum(tricks) == tot_tricks) {
       tricks[1] <- tricks[1] + 1
     }
-  } else {
-    tricks <- rep(floor(tot_tricks / n_players), n_players - 1)
-    tricks <- c(tricks, tot_tricks - sum(tricks))
   }
 
   names(tricks) <- trick_ids

@@ -28,7 +28,7 @@ test_that("'Game' class works", {
 
   # Round 0
   expect_round(game, 0)
-  game$add_players(purrr::map(players, \(x) Player$new(x)))
+  game$add_players(purrr::map(players, Player$new))
 
   # Round 1
   expect_order(game, players)

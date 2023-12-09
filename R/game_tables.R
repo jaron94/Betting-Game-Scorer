@@ -63,7 +63,7 @@
     dplyr::mutate(win = .data$bid == .data$tricks) |>
     dplyr::nest_by(.data$player) |>
     dplyr::mutate(rle = list(
-      rle(.data$data$win) |> c() |> purrr::map(\(x) utils::tail(x, 1))
+      rle(.data$data$win) |> c() |> purrr::map(\(x) utils::tail(x, 1)) # nolint unnecessary_lambda_linter
     )) |>
     dplyr::select(-"data") |>
     tidyr::unnest_wider("rle") |>

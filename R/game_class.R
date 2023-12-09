@@ -119,7 +119,7 @@ Game <- R6::R6Class( # nolint cyclocomp_linter
       if (self$num_players() > 0) {
         stop("This game already has players")
       }
-      purrr::walk(players, \(x) self$add_player(x))
+      purrr::walk(players, self$add_player)
       self$next_round()
     },
     num_players = function() {
