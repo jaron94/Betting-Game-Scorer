@@ -92,5 +92,5 @@
       Rank = dplyr::min_rank(dplyr::desc(.data$score)),
       .before = 1
     ) |>
-    dplyr::rename("Final Score" = "score")
+    dplyr::select(Rank, "Final Score" = "score")
 }
