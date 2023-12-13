@@ -32,7 +32,7 @@ test_that("{shinytest2} recording: Betting-Game-Scorer", {
 
   rlang::check_installed("rvest", "to test final scores")
 
-  final_scores_ui <- app$get_value(output = "final_scores") |>
+  final_scores_ui <- app$get_html(".popup") |>
     rvest::read_html() |>
     rvest::html_element("table") |>
     rvest::html_table() |>
