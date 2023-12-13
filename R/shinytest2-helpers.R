@@ -1,6 +1,6 @@
 start_app <- function(
     app_dir = testthat::test_path("test_app"),
-    variant = shinytest2::platform_variant(os_name = FALSE),
+    variant = shinytest2::platform_variant(),
     name = "Betting-Game-Scorer",
     height = 569,
     width = 979,
