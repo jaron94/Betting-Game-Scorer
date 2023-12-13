@@ -9,6 +9,7 @@ $run_dev.*
 ^\.rscignore$
 ^app\.R$
 ^app_mobile\.R$
+^app_desktop\.R$
 ^codecov\.yml$
 ^data-raw$
 ^dev$
