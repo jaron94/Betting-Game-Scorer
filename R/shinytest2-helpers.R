@@ -28,6 +28,7 @@ start_app <- function(
 }
 
 setup_game <- function(app, players) {
+  app$log_message("Setting up game")
   app$set_inputs(num_players = length(players))
   app$set_inputs(!!!players, allow_no_input_binding_ = TRUE)
   app$click(selector = "#set_up")
@@ -41,10 +42,15 @@ setup_game <- function(app, players) {
       as.integer(),
     rep(0L, length(players))
   )
+  app$log_message("Game set up")
 }
 
 sim_bids <- function(app, players, valid = TRUE) {
   round <- app$get_value(export = "round")
+  app$log_message(paste("Round:", round))
+  app$log_message(
+    paste("Simulating", if (valid) "valid" else "invalid", "bids")
+  )
 
   sweet_alert_button <- ".swal2-confirm"
   sweet_alert_title <- ".swal2-title"
@@ -107,6 +113,10 @@ sim_bids <- function(app, players, valid = TRUE) {
 
 sim_tricks <- function(app, players, valid = TRUE) {
   round <- app$get_value(export = "round")
+  app$log_message(paste("Round:", round))
+  app$log_message(
+    paste("Simulating", if (valid) "valid" else "invalid", "tricks")
+  )
 
   sweet_alert_button <- ".swal2-confirm"
   sweet_alert_title <- ".swal2-title"
