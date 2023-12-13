@@ -219,14 +219,14 @@ mob_end_modal <- function() {
     id = "end_modal",
     fluidRow(
       column(12,
-             align = "center",
-             h4(textOutput("end_message"))
+        align = "center",
+        h4(textOutput("end_message"))
       )
     ),
     fluidRow(
       column(12,
-             align = "center",
-             tableOutput("final_scores")
+        align = "center",
+        tableOutput("final_scores")
       )
     )
   )
