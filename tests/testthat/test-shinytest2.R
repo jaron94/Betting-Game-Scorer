@@ -25,6 +25,9 @@ test_that("{shinytest2} recording: Betting-Game-Scorer", {
     sim_tricks(app, players)
   }
 
+  # Should be end modal
+  app$expect_screenshot(name = "final_scores")
+
   rlang::check_installed("rvest", "to test final scores")
 
   final_scores_ui <- app$get_value(output = "final_scores") |>
