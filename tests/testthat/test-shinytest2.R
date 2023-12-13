@@ -27,6 +27,7 @@ test_that("{shinytest2} recording: Betting-Game-Scorer", {
   }
 
   # Should be end modal
+  app$expect_html(".popup")
   app$expect_screenshot(name = "final_scores")
 
   rlang::check_installed("rvest", "to test final scores")
