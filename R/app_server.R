@@ -191,7 +191,7 @@ app_server <- function(input, output, session) {
         )
       })
 
-      showModal(end_modal())
+      mob_end_modal()
 
       return()
     }

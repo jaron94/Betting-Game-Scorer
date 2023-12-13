@@ -212,3 +212,22 @@ mob_startup_modal <- function() {
     )
   )
 }
+
+# Function to create a modal dialog to display the scores at the end
+mob_end_modal <- function() {
+  f7Popup(
+    id = "end_modal",
+    fluidRow(
+      column(12,
+             align = "center",
+             h4(textOutput("end_message"))
+      )
+    ),
+    fluidRow(
+      column(12,
+             align = "center",
+             tableOutput("final_scores")
+      )
+    )
+  )
+}
