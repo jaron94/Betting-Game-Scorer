@@ -4,6 +4,7 @@ test_that("{shinytest2} recording: Betting-Game-Scorer", {
   sg_dir <- withr::local_tempdir()
   withr::local_options(bgScorer.use_gcs = FALSE)
   withr::local_envvar(BG_GAMES_DIR = sg_dir)
+  seed <- 42
 
   players <- c(
     P1 = "Jon",
@@ -14,15 +15,15 @@ test_that("{shinytest2} recording: Betting-Game-Scorer", {
   app <- start_app(name = "full_game_test")
   setup_game(app, players)
 
-  sim_bids(app, players, valid = FALSE)
-  sim_bids(app, players, valid = TRUE)
+  sim_bids(app, players, valid = FALSE, seed = seed)
+  sim_bids(app, players, valid = TRUE, seed = seed)
 
-  sim_tricks(app, players, valid = FALSE)
-  sim_tricks(app, players, valid = TRUE)
+  sim_tricks(app, players, valid = FALSE, seed = seed)
+  sim_tricks(app, players, valid = TRUE, seed = seed)
 
   for (i in seq(2, tot_rounds())) {
-    sim_bids(app, players)
-    sim_tricks(app, players)
+    sim_bids(app, players, seed = seed)
+    sim_tricks(app, players, seed = seed)
   }
 
   # Should be end modal

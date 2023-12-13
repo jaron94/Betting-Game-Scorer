@@ -1,9 +1,10 @@
 start_app <- function(
     app_dir = testthat::test_path("test_app"),
-    variant = shinytest2::platform_variant(),
+    variant = shinytest2::platform_variant(os_name = FALSE),
     name = "Betting-Game-Scorer",
     height = 569,
     width = 979,
+    # NB: this doesn't set the seed for the tests, only for the app
     seed = 42,
     timeout = 6 * 1000,
     options = list(shiny.devmode = TRUE),
@@ -45,7 +46,7 @@ setup_game <- function(app, players) {
   app$log_message("Game set up")
 }
 
-sim_bids <- function(app, players, valid = TRUE) {
+sim_bids <- function(app, players, valid = TRUE, seed = 42) {
   round <- app$get_value(export = "round")
   app$log_message(paste("Round:", round))
   app$log_message(
@@ -61,20 +62,35 @@ sim_bids <- function(app, players, valid = TRUE) {
 
   bid_ids <- paste0(players, "BR")
 
+  poss_bids <- seq(0, tot_tricks)
+
   if (valid) {
-    bids <- sample(seq(0, tot_tricks), n_players, replace = TRUE)
-    if (sum(bids) == tot_tricks) {
-      bids[1] <- bids[1] + 1
-    }
+    bids_base <- withr::with_seed(
+      # Ensure seed is different on the way down and back up
+      seed + round,
+      sample(poss_bids, n_players - 1, replace = TRUE)
+    )
+    # Valid bid set doesn't sum to total tricks
+    # 'last' player has to go 1 if the other bids sum to total tricks
+    bids <- c(bids_base, as.logical(sum(bids_base) == tot_tricks))
   } else {
-    bids <- rep(floor(tot_tricks / n_players), n_players - 1)
-    bids <- c(bids, tot_tricks - sum(bids))
+    bids_base <- rep(floor(tot_tricks / n_players), n_players - 1)
+    bids <- c(bids_base, tot_tricks - sum(bids_base))
   }
 
   bids <- as.integer(bids)
+
+  if (!all(bids %in% poss_bids)) {
+    stop("Impossible bids generated in test code")
+  }
+
   names(bids) <- bid_ids
 
-  app$set_inputs(!!!bids, allow_no_input_binding_ = TRUE)
+  if (sum(bids) > 0) {
+    app$set_inputs(!!!bids, allow_no_input_binding_ = TRUE)
+  } else {
+    app$set_inputs(!!!bids, allow_no_input_binding_ = TRUE, wait_ = FALSE)
+  }
 
   app$click(selector = "#bet")
   app$wait_for_idle()
@@ -111,7 +127,7 @@ sim_bids <- function(app, players, valid = TRUE) {
   }
 }
 
-sim_tricks <- function(app, players, valid = TRUE) {
+sim_tricks <- function(app, players, valid = TRUE, seed = 42) {
   round <- app$get_value(export = "round")
   app$log_message(paste("Round:", round))
   app$log_message(
@@ -127,14 +143,26 @@ sim_tricks <- function(app, players, valid = TRUE) {
 
   trick_ids <- paste0(players, "PR")
 
+  poss_tricks <- seq(0, tot_tricks)
+
   if (valid) {
-    tricks <- rep(floor(tot_tricks / n_players), n_players - 1)
-    tricks <- c(tricks, tot_tricks - sum(tricks))
+    tricks_base <- rep(floor(tot_tricks / n_players), n_players - 1)
+    tricks <- c(tricks_base, tot_tricks - sum(tricks_base))
   } else {
-    tricks <- sample(seq(0, tot_tricks), n_players)
-    if (sum(tricks) == tot_tricks) {
-      tricks[1] <- tricks[1] + 1
-    }
+    tricks_base <- withr::with_seed(
+      # Ensure seed is different on the way down and back up
+      # (and different to `sim_bids()`)
+      (seed + round) * 2,
+      sample(poss_tricks, n_players - 1, replace = TRUE)
+    )
+    # Invalid trick set doesn't sum to total tricks
+    tricks <- c(tricks_base, as.logical(sum(tricks_base) == tot_tricks))
+  }
+
+  tricks <- as.integer(tricks)
+
+  if (!all(tricks %in% poss_tricks)) {
+    stop("Impossible tricks generated in test code")
   }
 
   names(tricks) <- trick_ids
@@ -145,7 +173,6 @@ sim_tricks <- function(app, players, valid = TRUE) {
   app$wait_for_idle()
 
   if (valid) {
-
     loss_indicator <- app$get_html(
       paste(
         "body > div.swal2-container.swal2-center.swal2-backdrop-show",
