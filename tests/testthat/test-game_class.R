@@ -48,7 +48,7 @@ test_that("'Game' class works", {
 
   expected_scores <- data.frame(
     player = players,
-    score = c(1 + 10, 2 + 10, 4)
+    score = calc_points(c(1, 2, 3), c(1, 2, 4))
   )
 
   expect_identical(

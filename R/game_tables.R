@@ -13,7 +13,7 @@
         tricks = ntricks
       ) |>
         dplyr::mutate(
-          score = cumsum(.data$tricks + (.data$bid == .data$tricks) * 10)
+          score = cumsum(calc_points(.data$bid, .data$tricks))
         )
     }
   ) |>
