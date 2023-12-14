@@ -51,3 +51,21 @@ gen_trick_set <- function(round, n_players, valid = TRUE, seed = 42) {
   }
 }
 
+
+rand_game <- function(
+    up_to_round, players = c("P1", "P2", "P3"), bid_stage = TRUE, seed = 42) {
+  game <- Game$new("rand_game")
+  game$add_players(purrr::map(players, Player$new))
+  n_players <- game$num_players()
+  if (up_to_round == 1) {
+    return(game)
+  }
+  for (i in seq_len(up_to_round - 1)) {
+    game$record_bids(gen_bid_set(game$get_round(), n_players, seed = seed))
+    game$record_tricks(gen_trick_set(game$get_round(), n_players, seed = seed))
+  }
+  if (!bid_stage) {
+    game$record_bids(gen_bid_set(game$get_round(), n_players, seed = seed))
+  }
+  game
+}
