@@ -13,7 +13,8 @@
         tricks = ntricks
       ) |>
         dplyr::mutate(
-          score = cumsum(calc_points(.data$bid, .data$tricks))
+          score = cumsum(calc_points(.data$bid, .data$tricks)),
+          win = .data$bid == .data$tricks
         )
     }
   ) |>
@@ -25,7 +26,7 @@
   self$calc_table() |>
     tidyr::pivot_wider(
       names_from = "player",
-      values_from = dplyr::all_of(c("bid", "tricks", "score")),
+      values_from = dplyr::all_of(c("bid", "tricks", "score", "win")),
       names_glue = "{player}_{.value}",
       names_vary = "slowest"
     ) |>
@@ -54,13 +55,22 @@
     gt::tab_style(
       style = gt::cell_text(whitespace = "pre-line"),
       locations = gt::cells_body(gt::starts_with(player_names))
-    )
+    ) |>
+    gt::data_color(
+      columns = gt::ends_with("_win"),
+      target_columns = gt::ends_with("_S"),
+      fn = scales::col_factor(
+        palette = c("red", "green"),
+        domain = c(FALSE, TRUE),
+        na.color = "transparent"
+      )
+    ) |>
+    gt::cols_hide(columns = gt::ends_with("_win"))
 }
 
 
 .loss_tracker <- function(self, private) {
   tracked_losses <- self$calc_table() |>
-    dplyr::mutate(win = .data$bid == .data$tricks) |>
     dplyr::nest_by(.data$player) |>
     dplyr::mutate(rle = list(
       rle(.data$data$win) |> c() |> purrr::map(\(x) utils::tail(x, 1)) # nolint unnecessary_lambda_linter
