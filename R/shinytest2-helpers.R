@@ -56,35 +56,11 @@ sim_bids <- function(app, players, valid = TRUE, seed = 42) {
   sweet_alert_button <- ".swal2-confirm"
   sweet_alert_title <- ".swal2-title"
 
-  tot_tricks <- card_seq(round)
-
   n_players <- length(players)
 
-  bid_ids <- paste0(players, "BR")
+  bids <- gen_bid_set(round, n_players, valid, seed)
 
-  poss_bids <- seq(0, tot_tricks)
-
-  if (valid) {
-    bids_base <- withr::with_seed(
-      # Ensure seed is different on the way down and back up
-      seed + round,
-      sample(poss_bids, n_players - 1, replace = TRUE)
-    )
-    # Valid bid set doesn't sum to total tricks
-    # 'last' player has to go 1 if the other bids sum to total tricks
-    bids <- c(bids_base, as.logical(sum(bids_base) == tot_tricks))
-  } else {
-    bids_base <- rep(floor(tot_tricks / n_players), n_players - 1)
-    bids <- c(bids_base, tot_tricks - sum(bids_base))
-  }
-
-  bids <- as.integer(bids)
-
-  if (!all(bids %in% poss_bids)) {
-    stop("Impossible bids generated in test code")
-  }
-
-  names(bids) <- bid_ids
+  names(bids) <- paste0(players, "BR")
 
   if (sum(bids) > 0) {
     app$set_inputs(!!!bids, allow_no_input_binding_ = TRUE)
@@ -127,6 +103,7 @@ sim_bids <- function(app, players, valid = TRUE, seed = 42) {
   }
 }
 
+
 sim_tricks <- function(app, players, valid = TRUE, seed = 42) {
   round <- app$get_value(export = "round")
   app$log_message(paste("Round:", round))
@@ -137,35 +114,11 @@ sim_tricks <- function(app, players, valid = TRUE, seed = 42) {
   sweet_alert_button <- ".swal2-confirm"
   sweet_alert_title <- ".swal2-title"
 
-  tot_tricks <- card_seq(round)
-
   n_players <- length(players)
 
-  trick_ids <- paste0(players, "PR")
+  tricks <- gen_trick_set(round, n_players, valid, seed)
 
-  poss_tricks <- seq(0, tot_tricks)
-
-  if (valid) {
-    tricks_base <- rep(floor(tot_tricks / n_players), n_players - 1)
-    tricks <- c(tricks_base, tot_tricks - sum(tricks_base))
-  } else {
-    tricks_base <- withr::with_seed(
-      # Ensure seed is different on the way down and back up
-      # (and different to `sim_bids()`)
-      (seed + round) * 2,
-      sample(poss_tricks, n_players - 1, replace = TRUE)
-    )
-    # Invalid trick set doesn't sum to total tricks
-    tricks <- c(tricks_base, as.logical(sum(tricks_base) == tot_tricks))
-  }
-
-  tricks <- as.integer(tricks)
-
-  if (!all(tricks %in% poss_tricks)) {
-    stop("Impossible tricks generated in test code")
-  }
-
-  names(tricks) <- trick_ids
+  names(tricks) <- paste0(players, "PR")
 
   app$set_inputs(!!!tricks, allow_no_input_binding_ = TRUE)
 
