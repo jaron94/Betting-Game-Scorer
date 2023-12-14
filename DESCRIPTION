@@ -23,6 +23,7 @@ Imports:
     purrr,
     R6,
     rlang,
+    scales,
     shiny (>= 1.7.2),
     shinyjs,
     shinyMobile,
