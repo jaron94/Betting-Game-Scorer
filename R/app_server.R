@@ -170,7 +170,8 @@ app_server <- function(input, output, session) {
       shinyjs::hideElement("betting")
       shinyjs::hideElement("playing")
 
-      final_scores <- game$calc_final_score()
+      final_scores <- game$curr_score() |>
+        dplyr::rename("Final Score" = "Score")
 
       output$final_scores <- renderTable(
         final_scores,

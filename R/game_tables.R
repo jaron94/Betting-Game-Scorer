@@ -81,8 +81,7 @@
     paste(collapse = "\n")
 }
 
-
-.calc_final_score <- function(self, private) {
+.curr_score <- function(self, private) {
   self$calc_table() |>
     dplyr::filter(.data$Round == max(.data$Round)) |>
     dplyr::select(-"Round") |>
@@ -92,5 +91,5 @@
       Rank = dplyr::min_rank(dplyr::desc(.data$score)),
       .before = 1
     ) |>
-    dplyr::select("Rank", "Final Score" = "score")
+    dplyr::select("Rank", Score = "score")
 }

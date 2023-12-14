@@ -41,8 +41,9 @@ test_that("{shinytest2} recording: Betting-Game-Scorer", {
 
   game <- app$get_value(export = "game")
 
-  final_scores_server <- game$calc_final_score() |>
-    dplyr::mutate(`Final Score` = as.integer(.data$`Final Score`))
+  final_scores_server <- game$curr_score() |>
+    dplyr::mutate("Final Score" = as.integer(.data$Score)) |>
+    dplyr::select(-"Score")
 
   testthat::expect_identical(final_scores_ui, final_scores_server)
 })

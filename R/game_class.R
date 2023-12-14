@@ -196,8 +196,8 @@ Game <- R6::R6Class( # nolint cyclocomp_linter
     loss_tracker = function() {
       .loss_tracker(self, private)
     },
-    calc_final_score = function() {
-      .calc_final_score(self, private)
+    curr_score = function() {
+      .curr_score(self, private)
     },
     save = function(..., use_gcs = get_golem_config("use_gcs")) {
       file <- file.path(..., paste0(private$id, ".rds"))
