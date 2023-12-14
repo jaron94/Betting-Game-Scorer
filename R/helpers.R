@@ -49,6 +49,8 @@ gen_trick_set <- function(round, n_players, valid = TRUE, seed = 42) {
   if (!all(tricks %in% poss_tricks)) {
     stop("Impossible tricks generated in test code")
   }
+  
+  tricks
 }
 
 
