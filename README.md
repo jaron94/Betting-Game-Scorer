@@ -11,9 +11,9 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 coverage](https://codecov.io/gh/jaron94/Betting-Game-Scorer/branch/master/graph/badge.svg)](https://app.codecov.io/gh/jaron94/Betting-Game-Scorer?branch=master)
 <!-- badges: end -->
 
-Shiny app to score the ‘Betting Game’ AKA Contract Whist
+Shiny app to score the “Betting Game” AKA Contract Whist
 
-<https://jonathanaron.shinyapps.io/BettingGame/>
+<https://jonathanaron.shinyapps.io/Betting-Game-Scorer/>
 
 ## Installation
 
@@ -21,6 +21,6 @@ To run the application locally, you can install the development version
 of bgScorer from [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("jaron94/Betting-Game-Scorer")
+# install.packages("remotes")
+remotes::install_github("jaron94/Betting-Game-Scorer")
 ```
