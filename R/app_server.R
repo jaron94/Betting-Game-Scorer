@@ -132,6 +132,9 @@ app_server <- function(input, output, session) {
   )
 
   observeEvent(input$bet, {
+
+    Sys.sleep(0.5)
+
     bids <- purrr::map_int(
       game$get_player_names(),
       \(name) as.integer(input[[paste0(name, "BR")]])
@@ -149,6 +152,9 @@ app_server <- function(input, output, session) {
   })
 
   observeEvent(input$score, {
+
+    Sys.sleep(0.5)
+
     tricks <- purrr::map_int(
       game$get_player_names(),
       \(name) as.integer(input[[paste0(name, "PR")]])
