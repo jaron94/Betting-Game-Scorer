@@ -32,12 +32,12 @@
   margin-bottom: var(--f7-list-margin-vertical);
 }
 
-.apinputs > * {
+.apinputs>* {
   flex: 1;
   margin: 0;
 }
 
-#setup_div > div:nth-child(1) .item-inner {
+#setup_div>div:nth-child(1) .item-inner {
   padding-right: 0;
 }
 
@@ -59,7 +59,7 @@
   justify-content: space-between;
 }
 
-.popup.modal-in > .block {
+.popup.modal-in>.block {
   width: 100%;
   flex: 1;
 }

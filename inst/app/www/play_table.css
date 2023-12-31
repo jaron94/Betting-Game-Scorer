@@ -1,17 +1,17 @@
 #play_table {
-    width: 100%;
+  width: 100%;
 }
 
 #play_table .gt_column_spanner {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 40px !important
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 40px !important
 }
 
 #play_table .gt_column_spanner:hover {
-    overflow: visible;
-    white-space: normal;
+  overflow: visible;
+  white-space: normal;
 }
 
 div#play_table {
