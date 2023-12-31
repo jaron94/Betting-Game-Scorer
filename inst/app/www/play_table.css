@@ -13,3 +13,13 @@
     overflow: visible;
     white-space: normal;
 }
+
+div#play_table {
+  overflow-x: unset !important;
+  overflow-y: unset !important;
+}
+
+#play_table thead {
+  position: sticky !important;
+  top: 0 !important;
+}
