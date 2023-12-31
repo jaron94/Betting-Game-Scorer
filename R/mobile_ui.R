@@ -70,7 +70,7 @@ app_ui <- function(request) {
         inputs_tab,
         play_table_tab,
         animated = FALSE,
-        swipeable = TRUE
+        swipeable = FALSE
       )
     )
   } else {
