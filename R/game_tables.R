@@ -64,15 +64,18 @@
       style = gt::cell_text(whitespace = "pre-line"),
       locations = gt::cells_body(gt::starts_with(player_names))
     )
-  
+
   landscape <- base |>
     gt::tab_spanner_delim("_", gt::starts_with(player_names)) |>
     gt::cols_width(-c(Round, Cards, Suit) ~ px(30))
-  
+
   portrait <- base |>
-    gt::cols_label_with(columns = gt::ends_with("_S"), fn = \(x) sub("_S", "", x)) |>
+    gt::cols_label_with(
+      columns = gt::ends_with("_S"),
+      fn = \(x) sub("_S", "", x, fixed = TRUE)
+    ) |>
     gt::cols_hide(columns = gt::matches("(_B|_T)$"))
-  
+
   dplyr::lst(portrait, landscape)
 }
 
