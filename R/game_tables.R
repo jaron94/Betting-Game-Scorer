@@ -41,21 +41,12 @@
 
   cols_abbrev <- c(bid = "B", tricks = "T", score = "S")
 
-  self$output_table() |>
+  base <- self$output_table() |>
     dplyr::rename_with(
       \(name) stringr::str_replace_all(name, cols_abbrev),
       .cols = dplyr::starts_with(player_names)
     ) |>
     gt::gt(id = "play_table") |>
-    gt::tab_spanner_delim("_", gt::starts_with(player_names)) |>
-    gt::cols_align(align = "center") |>
-    gt::fmt_passthrough(Suit, escape = FALSE) |>
-    gt::cols_width(-c(Round, Cards, Suit) ~ px(30)) |>
-    gt::sub_missing(missing_text = "") |>
-    gt::tab_style(
-      style = gt::cell_text(whitespace = "pre-line"),
-      locations = gt::cells_body(gt::starts_with(player_names))
-    ) |>
     gt::data_color(
       columns = gt::ends_with("_win"),
       target_columns = gt::ends_with("_S"),
@@ -65,7 +56,24 @@
         na.color = "transparent"
       )
     ) |>
-    gt::cols_hide(columns = gt::ends_with("_win"))
+    gt::fmt_passthrough(Suit, escape = FALSE) |>
+    gt::cols_hide(columns = gt::ends_with("_win")) |>
+    gt::cols_align(align = "center") |>
+    gt::sub_missing(missing_text = "") |>
+    gt::tab_style(
+      style = gt::cell_text(whitespace = "pre-line"),
+      locations = gt::cells_body(gt::starts_with(player_names))
+    )
+  
+  landscape <- base |>
+    gt::tab_spanner_delim("_", gt::starts_with(player_names)) |>
+    gt::cols_width(-c(Round, Cards, Suit) ~ px(30))
+  
+  portrait <- base |>
+    gt::cols_label_with(columns = gt::ends_with("_S"), fn = \(x) sub("_S", "", x)) |>
+    gt::cols_hide(columns = gt::matches("(_B|_T)$"))
+  
+  dplyr::lst(portrait, landscape)
 }
 
 

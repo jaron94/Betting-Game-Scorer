@@ -265,6 +265,8 @@ app_server <- function(input, output, session) {
   })
 
   output$play_table <- gt::render_gt({
+    req(input$orientation)
+    
     watch("update_game")
 
     curr_round <- game$get_round()
@@ -273,7 +275,13 @@ app_server <- function(input, output, session) {
       return()
     }
 
-    game$play_table()
+    tables <- game$play_table()
+
+    if (input$orientation == "landscape-primary") {
+      tables$landscape
+    } else {
+      tables$portrait
+    }
   })
 }
 
