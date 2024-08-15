@@ -24,7 +24,6 @@ app_ui <- function(request) {
       ),
       uiOutput("betting", class = "ginput_div"),
       shinyjs::hidden(uiOutput("playing", class = "ginput_div")),
-      hairlines = FALSE,
       strong = TRUE
     )
   )
@@ -52,7 +51,6 @@ app_ui <- function(request) {
   navbar <- f7Navbar(
     title = "The Betting Game",
     hairline = FALSE,
-    shadow = TRUE,
     rightPanel = TRUE
   )
 
@@ -62,7 +60,6 @@ app_ui <- function(request) {
       id = "right_panel",
       title = "Settings",
       side = "right",
-      theme = "light",
       settings_div()
     )
   )
