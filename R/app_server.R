@@ -219,7 +219,7 @@ app_server <- function(input, output, session) {
       )
     }
   })
-  
+
   observeEvent(input$rollback, {
     watch("update_game")
     shinyWidgets::confirmSweetAlert(
@@ -233,7 +233,7 @@ app_server <- function(input, output, session) {
       )
     )
   })
-  
+
   observeEvent(input$confirm_rollback, {
     watch("update_game")
     if (isTRUE(input$confirm_rollback)) {
