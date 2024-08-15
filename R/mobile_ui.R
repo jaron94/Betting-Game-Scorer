@@ -13,6 +13,11 @@ app_ui <- function(request) {
       id = "play_div",
       f7BlockHeader(uiOutput("round_info", inline = TRUE)),
       f7Button(
+        "rollback",
+        f7Icon("arrow_counterclockwise"),
+        fill = FALSE
+      ),
+      f7Button(
         "save_game",
         f7Icon("floppy_disk"),
         fill = FALSE
