@@ -79,6 +79,15 @@
   padding: 10px;
 }
 
+#rollback {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: fit-content;
+  height: fit-content;
+  padding: 10px;
+}
+
 @media screen and (orientation: portrait) and (max-width: 480px) {
   .ginput_div {
     flex-direction: column;

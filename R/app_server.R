@@ -219,6 +219,28 @@ app_server <- function(input, output, session) {
       )
     }
   })
+  
+  observeEvent(input$rollback, {
+    watch("update_game")
+    shinyWidgets::confirmSweetAlert(
+      session,
+      inputId = "confirm_rollback",
+      title = "Confirm rollback",
+      text = paste0(
+        "Push 'Confirm' to rollback the game to the previous stage.",
+        "\n",
+        "This action is not reversible."
+      )
+    )
+  })
+  
+  observeEvent(input$confirm_rollback, {
+    watch("update_game")
+    if (isTRUE(input$confirm_rollback)) {
+      game$rollback()
+      trigger("update_game")
+    }
+  })
 
   observeEvent(input$save_game, {
     watch("update_game")
@@ -235,8 +257,10 @@ app_server <- function(input, output, session) {
   })
 
   gargoyle::on("update_game", {
-    shinyjs::toggle(id = "betting", condition = game$get_bid_stage())
-    shinyjs::toggle(id = "playing", condition = !game$get_bid_stage())
+    bid_stage <- game$get_bid_stage()
+    shinyjs::toggle(id = "betting", condition = bid_stage)
+    shinyjs::toggle(id = "playing", condition = !bid_stage)
+    shinyjs::toggle(id = "rollback", condition = game$get_round() > 1 || !bid_stage)
   })
 
   output$betting <- renderUI({
