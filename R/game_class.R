@@ -41,6 +41,14 @@ Player <- R6::R6Class(
       private$ntricks <- append(private$ntricks, ntricks)
       invisible(self)
     },
+    rollback_bid = function() {
+      private$bids <- private$bids[-length(private$bids)]
+      invisible(self)
+    },
+    rollback_ntricks = function() {
+      private$ntricks <- private$ntricks[-length(private$ntricks)]
+      invisible(self)
+    },
     get_bids = function() {
       private$bids
     },
@@ -136,9 +144,27 @@ Game <- R6::R6Class( # nolint cyclocomp_linter
       private$round <- private$round + 1
       invisible(self)
     },
+    prev_round = function() {
+      if (private$round <= 0 || (private$round == 1 && private$bid_stage)) {
+        stop("Cannot rollback before the first bid stage")
+      }
+      private$order <- shifter(self$get_player_names(), private$round - 1)
+      private$round <- private$round - 1
+      invisible(self)
+    },
     advance = function() {
       if (!private$bid_stage) {
         self$next_round()
+      }
+      private$bid_stage <- !private$bid_stage
+      invisible(self)
+    },
+    rollback = function() {
+      if (private$bid_stage) {
+        self$prev_round()
+        purrr::walk(private$players, \(x) x$rollback_ntricks())
+      } else {
+        purrr::walk(private$players, \(x) x$rollback_bid())
       }
       private$bid_stage <- !private$bid_stage
       invisible(self)
