@@ -63,27 +63,12 @@ app_server <- function(input, output, session) {
       \(x) input[[paste0("P", x)]]
     )
 
-    if (any(player_names == "")) {
-      send_error_alert(text = "Names not recorded for all players")
-    }
-
     avatars <- purrr::map_chr(
       seq_len(input$num_players),
       \(x) input[[paste0("A", x)]]
     )
 
-    if (any(avatars == "")) {
-      send_error_alert(text = "Avatars not recorded for all players")
-    }
-
-    purrr::walk(player_names, req)
-    purrr::walk(avatars, req)
-
-    players <- purrr::map2(
-      player_names,
-      avatars,
-      \(name, avatar) Player$new(name, avatar)
-    )
+    players <- create_players(player_names, avatars)
 
     game$add_players(players)
 
@@ -222,16 +207,7 @@ app_server <- function(input, output, session) {
 
   observeEvent(input$rollback, {
     watch("update_game")
-    shinyWidgets::confirmSweetAlert(
-      session,
-      inputId = "confirm_rollback",
-      title = "Confirm rollback",
-      text = paste0(
-        "Push 'Confirm' to rollback the game to the previous stage.",
-        "\n",
-        "This action is not reversible."
-      )
-    )
+    confirm_rollback(session)
   })
 
   observeEvent(input$confirm_rollback, {
@@ -260,7 +236,10 @@ app_server <- function(input, output, session) {
     bid_stage <- game$get_bid_stage()
     shinyjs::toggle(id = "betting", condition = bid_stage)
     shinyjs::toggle(id = "playing", condition = !bid_stage)
-    shinyjs::toggle(id = "rollback", condition = game$get_round() > 1 || !bid_stage)
+    shinyjs::toggle(
+      id = "rollback",
+      condition = game$get_round() > 1 || !bid_stage
+    )
   })
 
   output$betting <- renderUI({
@@ -309,6 +288,24 @@ app_server <- function(input, output, session) {
   })
 }
 
+
+create_players <- function(player_names, avatars) {
+  if (any(player_names == "")) {
+    send_error_alert(text = "Names not recorded for all players")
+  }
+  if (any(avatars == "")) {
+    send_error_alert(text = "Avatars not recorded for all players")
+  }
+
+  purrr::walk(player_names, req)
+  purrr::walk(avatars, req)
+
+  purrr::map2(
+    player_names,
+    avatars,
+    \(name, avatar) Player$new(name, avatar)
+  )
+}
 
 gen_picker <- function(game, bid_stage, name) {
   player <- game$get_player_by_id(name)
@@ -360,6 +357,19 @@ send_error_alert <- function(text, session = getDefaultReactiveDomain()) {
     title = "Error",
     text = text,
     type = "error"
+  )
+}
+
+confirm_rollback <- function(session = getDefaultReactiveDomain()) {
+  shinyWidgets::confirmSweetAlert(
+    session,
+    inputId = "confirm_rollback",
+    title = "Confirm rollback",
+    text = paste0(
+      "Push 'Confirm' to rollback the game to the previous stage.",
+      "\n",
+      "This action is not reversible."
+    )
   )
 }
 

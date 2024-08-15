@@ -79,31 +79,31 @@ test_that("'Game' class works", {
 
 test_that("Rolling back works", {
   withr::local_options(bgScorer.use_gcs = FALSE)
-  
+
   game <- Game$new("new_game")
-  
+
   players <- c(
     "Player1",
     "Player2",
     "Player3"
   )
-  
+
   # Round 0
   game$add_players(purrr::map(players, Player$new))
-  
+
   expect_error(game$rollback(), "rollback")
-  
+
   # Round 1
   expect_no_error(game$record_bids(c(1, 2, 3)))
   expect_no_error(game$rollback())
-  expect_equal(game$get_round(), 1)
-  expect_equal(game$get_bid_stage(), TRUE)
+  expect_round(game, 1)
+  expect_true(game$get_bid_stage())
   expect_error(game$rollback(), "rollback")
   expect_identical(
     purrr::map(seq_along(players), \(x) game$get_player(x)$get_bids()),
     list(numeric(), numeric(), numeric())
   )
-  expect_equal(game$get_round(), 1)
+  expect_round(game, 1)
   expect_no_error(game$record_bids(c(1, 2, 3)))
   expect_no_error(game$record_tricks(c(1, 2, 4)))
   expect_identical(
@@ -114,7 +114,7 @@ test_that("Rolling back works", {
     purrr::map(seq_along(players), \(x) game$get_player(x)$get_ntricks()),
     list(1, 2, 4)
   )
-  
+
   expect_no_error(game$rollback())
   expect_identical(
     purrr::map(seq_along(players), \(x) game$get_player(x)$get_bids()),
@@ -124,13 +124,13 @@ test_that("Rolling back works", {
     purrr::map(seq_along(players), \(x) game$get_player(x)$get_ntricks()),
     list(numeric(), numeric(), numeric())
   )
-  expect_equal(game$get_round(), 1)
-  
+  expect_round(game, 1)
+
   # Round 2
   expect_no_error(game$record_tricks(c(1, 2, 4)))
-  expect_equal(game$get_round(), 2)
+  expect_round(game, 2)
   expect_no_error(game$rollback())
-  expect_equal(game$get_round(), 1)
+  expect_round(game, 1)
   expect_no_error(game$record_tricks(c(1, 2, 4)))
   expect_no_error(game$record_bids(c(1, 2, 2)))
   expect_identical(
@@ -141,6 +141,4 @@ test_that("Rolling back works", {
     purrr::map(seq_along(players), \(x) game$get_player(x)$get_ntricks()),
     list(1, 2, 4)
   )
-  
-  
 })
